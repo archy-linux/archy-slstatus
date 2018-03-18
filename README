@@ -60,3 +60,15 @@ source code. This keeps it fast, secure and simple.
 Todo
 ----
 Porting to OpenBSD is the current goal before thinking about a release.
+
+The following functions are not portable at the moment:
+- uptime
+- ipv{4,6}
+- ram_{free,perc,total,used}
+- wifi_{perc,essid}
+- cpu_{freq,perc,iowait}
+- entropy
+- swap_{free,perc,total,used}
+- battery_{perc,power,state}
+- temp
+- vol_perc
