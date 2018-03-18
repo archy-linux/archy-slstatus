@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#ifdef __linux__
 #include <stdio.h>
 
 #include "../util.h"
@@ -11,3 +12,4 @@ temp(const char *file)
 	return (pscanf(file, "%d", &temp) == 1) ?
 	       bprintf("%d", temp / 1000) : NULL;
 }
+#endif

@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#ifdef __linux__
 #include <err.h>
 #include <stdio.h>
 #include <string.h>
@@ -134,3 +135,4 @@ swap_used(void)
 
 	return bprintf("%f", (float)(total - free - cached) / 1024 / 1024);
 }
+#endif

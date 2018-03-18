@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#ifdef __linux__
 #include <sys/sysinfo.h>
 
 #include "../util.h"
@@ -16,3 +17,4 @@ uptime(void)
 
 	return bprintf("%dh %dm", h, m);
 }
+#endif

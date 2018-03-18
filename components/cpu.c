@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#ifdef __linux__
 #include <stdio.h>
 #include <string.h>
 
@@ -61,3 +62,4 @@ cpu_iowait(void)
 
 	return bprintf("%d", perc);
 }
+#endif

@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#ifdef __linux__
 #include <err.h>
 #include <fcntl.h>
 #include <sys/soundcard.h>
@@ -41,3 +42,4 @@ vol_perc(const char *card)
 
 	return bprintf("%d", v & 0xff);
 }
+#endif

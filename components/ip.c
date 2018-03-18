@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#ifdef __linux__
 #include <err.h>
 #include <ifaddrs.h>
 #include <netdb.h>
@@ -68,3 +69,4 @@ ipv6(const char *iface)
 
 	return NULL;
 }
+#endif

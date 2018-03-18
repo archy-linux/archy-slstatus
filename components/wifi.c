@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#ifdef __linux__
 #include <err.h>
 #include <ifaddrs.h>
 #include <linux/wireless.h>
@@ -88,3 +89,4 @@ wifi_essid(const char *iface)
 	else
 		return id;
 }
+#endif

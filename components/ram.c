@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#ifdef __linux__
 #include <stdio.h>
 
 #include "../util.h"
@@ -50,3 +51,4 @@ ram_used(void)
 	       bprintf("%f", (float)(total - free - buffers - cached) / 1024 / 1024) :
 	       NULL;
 }
+#endif

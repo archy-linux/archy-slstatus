@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#ifdef __linux__
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
@@ -54,3 +55,4 @@ battery_state(const char *bat)
 	}
 	return (i == LEN(map)) ? "?" : map[i].symbol;
 }
+#endif
