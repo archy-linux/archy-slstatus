@@ -1,22 +1,50 @@
 /* See LICENSE file for copyright and license details. */
+#include <err.h>
+#include <stdio.h>
 #ifdef __linux__
 #include <limits.h>
-#include <stdio.h>
 #include <string.h>
+#elif __OpenBSD__
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <machine/apmvar.h>
+#endif
 
 #include "../util.h"
 
 const char *
 battery_perc(const char *bat)
 {
+#ifdef __linux__
 	int perc;
 	char path[PATH_MAX];
 
 	snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/", bat, "/capacity");
 	return (pscanf(path, "%i", &perc) == 1) ?
 	       bprintf("%d", perc) : NULL;
+#elif __OpenBSD__
+	struct apm_power_info apm_info;
+	int fd;
+
+	fd = open("/dev/apm", O_RDONLY);
+	if (fd < 0) {
+		warn("Failed to open file /dev/apm");
+		return NULL;
+	}
+
+	if (ioctl(fd, APM_IOC_GETPOWER, &apm_info) < 0) {
+		warn("Failed to get battery info");
+		close(fd);
+		return NULL;
+	}
+	close(fd);
+
+	return bprintf("%d", apm_info.battery_life);
+#endif
 }
 
+#ifdef __linux__
 const char *
 battery_power(const char *bat)
 {

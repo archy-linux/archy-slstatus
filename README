@@ -69,6 +69,6 @@ The following functions are not portable at the moment:
 - cpu_{freq,perc,iowait}
 - entropy
 - swap_{free,perc,total,used}
-- battery_{perc,power,state}
+- battery_{power,state}
 - temp
 - vol_perc
