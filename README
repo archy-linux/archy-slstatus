@@ -62,7 +62,6 @@ Todo
 Porting to OpenBSD is the current goal before thinking about a release.
 
 The following functions are not portable at the moment:
-- uptime
 - ipv{4,6}
 - ram_{free,perc,total,used}
 - wifi_{perc,essid}
