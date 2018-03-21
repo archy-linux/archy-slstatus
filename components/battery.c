@@ -1,10 +1,10 @@
 /* See LICENSE file for copyright and license details. */
 #include <err.h>
 #include <stdio.h>
-#ifdef __linux__
+#if defined(__linux__)
 #include <limits.h>
 #include <string.h>
-#elif __OpenBSD__
+#elif defined(__OpenBSD__)
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -16,14 +16,14 @@
 const char *
 battery_perc(const char *bat)
 {
-#ifdef __linux__
+#if defined(__linux__)
 	int perc;
 	char path[PATH_MAX];
 
 	snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/", bat, "/capacity");
 	return (pscanf(path, "%i", &perc) == 1) ?
 	       bprintf("%d", perc) : NULL;
-#elif __OpenBSD__
+#elif defined(__OpenBSD__)
 	struct apm_power_info apm_info;
 	int fd;
 
@@ -44,7 +44,7 @@ battery_perc(const char *bat)
 #endif
 }
 
-#ifdef __linux__
+#if defined(__linux__)
 const char *
 battery_power(const char *bat)
 {

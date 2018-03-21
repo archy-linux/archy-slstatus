@@ -1,8 +1,8 @@
 /* See LICENSE file for copyright and license details. */
 #include <stdio.h>
-#ifdef __linux__
+#if defined(__linux__)
 #include <sys/sysinfo.h>
-#elif __OpenBSD__
+#elif defined(__OpenBSD__)
 #include <sys/sysctl.h>
 #include <sys/time.h>
 #endif
@@ -15,12 +15,12 @@ uptime(void)
 	int h;
 	int m;
 	int uptime = 0;
-#ifdef __linux__
+#if defined(__linux__)
 	struct sysinfo info;
 
 	sysinfo(&info);
 	uptime = info.uptime;
-#elif __OpenBSD__
+#elif defined(__OpenBSD__)
 	int mib[2];
 	size_t size;
 	time_t now;

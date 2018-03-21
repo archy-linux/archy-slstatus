@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#ifdef __linux__
+#if defined(__linux__)
 #include <err.h>
 #include <fcntl.h>
 #include <sys/soundcard.h>
