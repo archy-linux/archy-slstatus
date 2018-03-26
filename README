@@ -31,8 +31,7 @@ Features
 
 Requirements
 ------------
-In order to build slstatus you need the Xlib header files and optionally ALSA
-for volume percentage. PulseAudio is not supported for various reasons.
+In order to build slstatus you need the Xlib header files.
 
 
 Installation
