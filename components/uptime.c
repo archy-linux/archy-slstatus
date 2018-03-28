@@ -1,5 +1,7 @@
 /* See LICENSE file for copyright and license details. */
+#include <errno.h>
 #include <stdio.h>
+#include <string.h>
 #if defined(__linux__)
 #include <sys/sysinfo.h>
 #elif defined(__OpenBSD__)
@@ -35,8 +37,10 @@ uptime(void)
 
 	if (sysctl(mib, 2, &boottime, &size, NULL, 0) != -1)
 		uptime = now - boottime.tv_sec;
-	else
+	else {
+		fprintf(stderr, "sysctl 'KERN_BOOTTIME': %s\n", strerror(errno));
 		return NULL;
+	}
 #endif
 	h = uptime / 3600;
 	m = (uptime - h * 3600) / 60;

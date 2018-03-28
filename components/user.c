@@ -1,6 +1,8 @@
 /* See LICENSE file for copyright and license details. */
+#include <errno.h>
 #include <pwd.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -18,7 +20,7 @@ username(void)
 	struct passwd *pw = getpwuid(geteuid());
 
 	if (pw == NULL) {
-		fprintf(stderr, "Failed to get username");
+		fprintf(stderr, "getpwuid '%d': %s\n", geteuid(), strerror(errno));
 		return NULL;
 	}
 

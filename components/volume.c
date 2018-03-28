@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #if defined(__linux__)
+#include <errno.h>
 #include <fcntl.h>
 #include <sys/soundcard.h>
 #include <sys/ioctl.h>
@@ -18,19 +19,19 @@ vol_perc(const char *card)
 
 	afd = open(card, O_RDONLY | O_NONBLOCK);
 	if (afd == -1) {
-		fprintf(stderr, "Cannot open %s", card);
+		fprintf(stderr, "open '%s': %s\n", card, strerror(errno));
 		return NULL;
 	}
 
 	if (ioctl(afd, SOUND_MIXER_READ_DEVMASK, &devmask) == -1) {
-		fprintf(stderr, "Cannot get volume for %s", card);
+		fprintf(stderr, "ioctl 'SOUND_MIXER_READ_DEVMASK': %s\n", strerror(errno));
 		close(afd);
 		return NULL;
 	}
 	for (i = 0; i < LEN(vnames); i++) {
 		if (devmask & (1 << i) && !strcmp("vol", vnames[i])) {
 			if (ioctl(afd, MIXER_READ(i), &v) == -1) {
-				fprintf(stderr, "vol_perc: ioctl");
+				fprintf(stderr, "ioctl 'MIXER_READ(%d)': %s\n", i, strerror(errno));
 				close(afd);
 				return NULL;
 			}

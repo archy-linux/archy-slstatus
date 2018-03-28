@@ -1,5 +1,7 @@
 /* See LICENSE file for copyright and license details. */
+#include <errno.h>
 #include <stdio.h>
+#include <string.h>
 #if defined(__linux__)
 #include <limits.h>
 #include <string.h>
@@ -28,12 +30,12 @@ battery_perc(const char *bat)
 
 	fd = open("/dev/apm", O_RDONLY);
 	if (fd < 0) {
-		fprintf(stderr, "Failed to open file /dev/apm");
+		fprintf(stderr, "open '/dev/apm': %s\n", strerror(errno));
 		return NULL;
 	}
 
 	if (ioctl(fd, APM_IOC_GETPOWER, &apm_info) < 0) {
-		fprintf(stderr, "Failed to get battery info");
+		fprintf(stderr, "ioctl 'APM_IOC_GETPOWER': %s\n", strerror(errno));
 		close(fd);
 		return NULL;
 	}

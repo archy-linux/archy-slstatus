@@ -10,7 +10,7 @@ load_avg(const char *fmt)
 	double avgs[3];
 
 	if (getloadavg(avgs, 3) < 0) {
-		fprintf(stderr, "Failed to get the load avg");
+		fprintf(stderr, "getloadavg: Could not obtain load average.\n");
 		return NULL;
 	}
 

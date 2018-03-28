@@ -11,7 +11,7 @@ keyboard_indicators(void)
 	XKeyboardState state;
 
 	if (dpy == NULL) {
-		fprintf(stderr, "Cannot open display");
+		fprintf(stderr, "Cannot open display\n");
 		return NULL;
 	}
 	XGetKeyboardControl(dpy, &state);

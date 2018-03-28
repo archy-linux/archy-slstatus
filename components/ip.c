@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #if defined(__linux__)
+#include <errno.h>
 #include <ifaddrs.h>
 #include <netdb.h>
 #include <stdio.h>
@@ -15,7 +16,7 @@ ipv4(const char *iface)
 	char host[NI_MAXHOST];
 
 	if (getifaddrs(&ifaddr) == -1) {
-		fprintf(stderr, "Failed to get IPv4 address for interface %s", iface);
+		fprintf(stderr, "getifaddrs: %s\n", strerror(errno));
 		return NULL;
 	}
 
@@ -26,7 +27,7 @@ ipv4(const char *iface)
 		s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in), host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
 		if ((strcmp(ifa->ifa_name, iface) == 0) && (ifa->ifa_addr->sa_family == AF_INET)) {
 			if (s != 0) {
-				fprintf(stderr, "Failed to get IPv4 address for interface %s", iface);
+				fprintf(stderr, "getnameinfo: %s\n", gai_strerror(s));
 				return NULL;
 			}
 			return bprintf("%s", host);
@@ -46,7 +47,7 @@ ipv6(const char *iface)
 	char host[NI_MAXHOST];
 
 	if (getifaddrs(&ifaddr) == -1) {
-		fprintf(stderr, "Failed to get IPv6 address for interface %s", iface);
+		fprintf(stderr, "getifaddrs: %s\n", strerror(errno));
 		return NULL;
 	}
 
@@ -57,7 +58,7 @@ ipv6(const char *iface)
 		s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in6), host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
 		if ((strcmp(ifa->ifa_name, iface) == 0) && (ifa->ifa_addr->sa_family == AF_INET6)) {
 			if (s != 0) {
-				fprintf(stderr, "Failed to get IPv6 address for interface %s", iface);
+				fprintf(stderr, "getnameinfo: %s\n", gai_strerror(s));
 				return NULL;
 			}
 			return bprintf("%s", host);

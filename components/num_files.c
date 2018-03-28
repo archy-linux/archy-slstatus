@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#include <errno.h>
 #include <dirent.h>
 #include <stdio.h>
 #include <string.h>
@@ -13,7 +14,7 @@ num_files(const char *dir)
 	int num = 0;
 
 	if ((fd = opendir(dir)) == NULL) {
-		fprintf(stderr, "Failed to get number of files in directory %s", dir);
+		fprintf(stderr, "opendir '%s': %s\n", dir, strerror(errno));
 		return NULL;
 	}
 

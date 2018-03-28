@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -29,7 +30,7 @@ pscanf(const char *path, const char *fmt, ...)
 	int n;
 
 	if (!(fp = fopen(path, "r"))) {
-		fprintf(stderr, "fopen for %s failed", path);
+		fprintf(stderr, "fopen '%s': %s\n", path, strerror(errno));
 		return -1;
 	}
 	va_start(ap, fmt);
