@@ -1,6 +1,5 @@
 /* See LICENSE file for copyright and license details. */
 #if defined(__linux__)
-#include <err.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -16,12 +15,12 @@ swap_free(void)
 
 	fp = fopen("/proc/meminfo", "r");
 	if (fp == NULL) {
-		warn("Failed to open file /proc/meminfo");
+		fprintf(stderr, "Failed to open file /proc/meminfo");
 		return NULL;
 	}
 
 	if ((bytes_read = fread(buf, sizeof(char), sizeof(buf) - 1, fp)) == 0) {
-		warn("swap_free: read error");
+		fprintf(stderr, "swap_free: read error");
 		fclose(fp);
 		return NULL;
 	}
@@ -48,12 +47,12 @@ swap_perc(void)
 
 	fp = fopen("/proc/meminfo", "r");
 	if (fp == NULL) {
-		warn("Failed to open file /proc/meminfo");
+		fprintf(stderr, "Failed to open file /proc/meminfo");
 		return NULL;
 	}
 
 	if ((bytes_read = fread(buf, sizeof(char), sizeof(buf) - 1, fp)) == 0) {
-		warn("swap_perc: read error");
+		fprintf(stderr, "swap_perc: read error");
 		fclose(fp);
 		return NULL;
 	}
@@ -84,11 +83,11 @@ swap_total(void)
 
 	fp = fopen("/proc/meminfo", "r");
 	if (fp == NULL) {
-		warn("Failed to open file /proc/meminfo");
+		fprintf(stderr, "Failed to open file /proc/meminfo");
 		return NULL;
 	}
 	if ((bytes_read = fread(buf, sizeof(char), sizeof(buf) - 1, fp)) == 0) {
-		warn("swap_total: read error");
+		fprintf(stderr, "swap_total: read error");
 		fclose(fp);
 		return NULL;
 	}
@@ -111,11 +110,11 @@ swap_used(void)
 
 	fp = fopen("/proc/meminfo", "r");
 	if (fp == NULL) {
-		warn("Failed to open file /proc/meminfo");
+		fprintf(stderr, "Failed to open file /proc/meminfo");
 		return NULL;
 	}
 	if ((bytes_read = fread(buf, sizeof(char), sizeof(buf) - 1, fp)) == 0) {
-		warn("swap_used: read error");
+		fprintf(stderr, "swap_used: read error");
 		fclose(fp);
 		return NULL;
 	}

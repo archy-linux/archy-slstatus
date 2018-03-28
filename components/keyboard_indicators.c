@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include <err.h>
+#include <stdio.h>
 #include <X11/Xlib.h>
 
 #include "../util.h"
@@ -11,7 +11,7 @@ keyboard_indicators(void)
 	XKeyboardState state;
 
 	if (dpy == NULL) {
-		warnx("XOpenDisplay failed");
+		fprintf(stderr, "Cannot open display");
 		return NULL;
 	}
 	XGetKeyboardControl(dpy, &state);

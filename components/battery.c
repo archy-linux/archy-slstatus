@@ -1,5 +1,4 @@
 /* See LICENSE file for copyright and license details. */
-#include <err.h>
 #include <stdio.h>
 #if defined(__linux__)
 #include <limits.h>
@@ -29,12 +28,12 @@ battery_perc(const char *bat)
 
 	fd = open("/dev/apm", O_RDONLY);
 	if (fd < 0) {
-		warn("Failed to open file /dev/apm");
+		fprintf(stderr, "Failed to open file /dev/apm");
 		return NULL;
 	}
 
 	if (ioctl(fd, APM_IOC_GETPOWER, &apm_info) < 0) {
-		warn("Failed to get battery info");
+		fprintf(stderr, "Failed to get battery info");
 		close(fd);
 		return NULL;
 	}

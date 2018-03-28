@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include <err.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "../util.h"
@@ -10,7 +10,7 @@ load_avg(const char *fmt)
 	double avgs[3];
 
 	if (getloadavg(avgs, 3) < 0) {
-		warnx("Failed to get the load avg");
+		fprintf(stderr, "Failed to get the load avg");
 		return NULL;
 	}
 

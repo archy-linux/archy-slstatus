@@ -1,6 +1,5 @@
 /* See LICENSE file for copyright and license details. */
 #if defined(__linux__)
-#include <err.h>
 #include <ifaddrs.h>
 #include <linux/wireless.h>
 #include <sys/socket.h>
@@ -26,7 +25,7 @@ wifi_perc(const char *iface)
 	snprintf(path, sizeof(path), "%s%s%s", "/sys/class/net/", iface, "/operstate");
 	fp = fopen(path, "r");
 	if (fp == NULL) {
-		warn("Failed to open file %s", path);
+		fprintf(stderr, "Failed to open file %s", path);
 		return NULL;
 	}
 	p = fgets(status, 5, fp);
@@ -37,7 +36,7 @@ wifi_perc(const char *iface)
 
 	fp = fopen("/proc/net/wireless", "r");
 	if (fp == NULL) {
-		warn("Failed to open file /proc/net/wireless");
+		fprintf(stderr, "Failed to open file /proc/net/wireless");
 		return NULL;
 	}
 
@@ -72,12 +71,12 @@ wifi_essid(const char *iface)
 	snprintf(wreq.ifr_name, sizeof(wreq.ifr_name), "%s", iface);
 
 	if (sockfd == -1) {
-		warn("Failed to get ESSID for interface %s", iface);
+		fprintf(stderr, "Failed to get ESSID for interface %s", iface);
 		return NULL;
 	}
 	wreq.u.essid.pointer = id;
 	if (ioctl(sockfd,SIOCGIWESSID, &wreq) == -1) {
-		warn("Failed to get ESSID for interface %s", iface);
+		fprintf(stderr, "Failed to get ESSID for interface %s", iface);
 		close(sockfd);
 		return NULL;
 	}
