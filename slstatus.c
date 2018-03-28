@@ -76,7 +76,7 @@ main(int argc, char *argv[])
 	sigaction(SIGTERM, &act, NULL);
 
 	if (!sflag && !(dpy = XOpenDisplay(NULL))) {
-		fprintf(stderr, "slstatus: cannot open display");
+		fprintf(stderr, "Cannot open display");
 		return 1;
 	}
 
