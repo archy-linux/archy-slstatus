@@ -1,8 +1,11 @@
 /* See LICENSE file for copyright and license details. */
-#if defined(__linux__)
 #include <errno.h>
 #include <fcntl.h>
-#include <sys/soundcard.h>
+#if defined(__OpenBSD__)
+# include <soundcard.h>
+#else
+# include <sys/soundcard.h>
+#endif
 #include <sys/ioctl.h>
 #include <stdio.h>
 #include <string.h>
@@ -42,4 +45,3 @@ vol_perc(const char *card)
 
 	return bprintf("%d", v & 0xff);
 }
-#endif
