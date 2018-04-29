@@ -11,18 +11,31 @@
 
 #include "../util.h"
 
+#if defined(__linux__)
 const char *
 uptime(void)
 {
 	int h;
 	int m;
 	int uptime = 0;
-#if defined(__linux__)
 	struct sysinfo info;
 
 	sysinfo(&info);
 	uptime = info.uptime;
+
+	h = uptime / 3600;
+	m = (uptime - h * 3600) / 60;
+
+	return bprintf("%dh %dm", h, m);
+}
 #elif defined(__OpenBSD__)
+const char *
+uptime(void)
+{
+	int h;
+	int m;
+	int uptime = 0;
+
 	int mib[2];
 	size_t size;
 	time_t now;
@@ -41,9 +54,10 @@ uptime(void)
 		fprintf(stderr, "sysctl 'KERN_BOOTTIME': %s\n", strerror(errno));
 		return NULL;
 	}
-#endif
+
 	h = uptime / 3600;
 	m = (uptime - h * 3600) / 60;
 
 	return bprintf("%dh %dm", h, m);
 }
+#endif
