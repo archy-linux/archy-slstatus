@@ -14,17 +14,21 @@
 
 #include "../util.h"
 
+#if defined(__linux__)
 const char *
 battery_perc(const char *bat)
 {
-#if defined(__linux__)
 	int perc;
 	char path[PATH_MAX];
 
 	snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/", bat, "/capacity");
 	return (pscanf(path, "%i", &perc) == 1) ?
 	       bprintf("%d", perc) : NULL;
+}
 #elif defined(__OpenBSD__)
+const char *
+battery_perc(const char *null)
+{
 	struct apm_power_info apm_info;
 	int fd;
 
@@ -42,8 +46,8 @@ battery_perc(const char *bat)
 	close(fd);
 
 	return bprintf("%d", apm_info.battery_life);
-#endif
 }
+#endif
 
 #if defined(__linux__)
 const char *
