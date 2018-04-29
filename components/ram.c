@@ -1,5 +1,11 @@
 /* See LICENSE file for copyright and license details. */
 #include <stdio.h>
+#if defined (__OpenBSD__)
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#include <stdlib.h>
+#include <unistd.h>
+#endif
 
 #include "../util.h"
 
@@ -52,11 +58,6 @@ ram_used(void)
 	       NULL;
 }
 #elif defined(__OpenBSD__)
-#include <sys/types.h>
-#include <sys/sysctl.h>
-#include <stdlib.h>
-#include <unistd.h>
-
 inline int
 load_uvmexp(struct uvmexp *uvmexp)
 {
