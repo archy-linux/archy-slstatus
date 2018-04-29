@@ -67,4 +67,3 @@ The following functions are not portable at the moment:
 - swap_{free,perc,total,used}
 - battery_{power,state}
 - temp
-- vol_perc
