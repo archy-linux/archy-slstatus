@@ -1,5 +1,9 @@
 /* See LICENSE file for copyright and license details. */
-#if defined(__linux__)
+#if defined(__OpenBSD__)
+#include <sys/types.h>
+#include <sys/socket.h>
+#endif
+
 #include <errno.h>
 #include <ifaddrs.h>
 #include <netdb.h>
@@ -69,4 +73,3 @@ ipv6(const char *iface)
 
 	return NULL;
 }
-#endif
