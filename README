@@ -62,7 +62,7 @@ Porting to OpenBSD is the current goal before thinking about a release.
 
 The following functions are not portable at the moment:
 - wifi_{perc,essid}
-- cpu_{freq,perc,iowait}
+- cpu_{perc,iowait}
 - entropy
 - swap_{free,perc,total,used}
 - battery_{power,state}
