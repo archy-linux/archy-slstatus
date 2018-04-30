@@ -1,10 +1,9 @@
 /* See LICENSE file for copyright and license details. */
-#if defined(__linux__)
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "../util.h"
+#include "../../util.h"
 
 const char *
 swap_free(void)
@@ -135,4 +134,3 @@ swap_used(void)
 
 	return bprintf("%f", (float)(total - free - cached) / 1024 / 1024);
 }
-#endif

@@ -20,7 +20,7 @@ COM =\
 	components/num_files\
 	components/$(OS)/ram \
 	components/run_command\
-	components/swap\
+	components/$(OS)/swap \
 	components/temperature\
 	components/uptime\
 	components/user\
