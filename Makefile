@@ -27,6 +27,10 @@ COM =\
 	components/volume\
 	components/$(OS)/wifi
 
+SLSCFLAGS  = -I$(X11INC) -D_DEFAULT_SOURCE $(CFLAGS)
+SLSLDFLAGS = -L$(X11LIB) $(LDFLAGS)
+SLSLIBS    = -lX11 $(OSSLIBS) $(LIBS)
+
 all: slstatus
 
 slstatus: slstatus.o $(COM:=.o) $(REQ:=.o)
@@ -37,10 +41,10 @@ config.h:
 	cp config.def.h $@
 
 .o:
-	$(CC) -o $@ $(LDFLAGS) $< $(COM:=.o) $(REQ:=.o) $(LDLIBS)
+	$(CC) -o $@ $(SLSLDFLAGS) $< $(COM:=.o) $(REQ:=.o) $(SLSLIBS)
 
 .c.o:
-	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) $<
+	$(CC) -o $@ -c $(SLSCFLAGS) $<
 
 clean:
 	rm -f slstatus slstatus.o $(COM:=.o) $(REQ:=.o)
