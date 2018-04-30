@@ -2,33 +2,11 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
-#if defined(__linux__)
-#include <sys/sysinfo.h>
-#elif defined(__OpenBSD__)
 #include <sys/sysctl.h>
 #include <sys/time.h>
-#endif
 
-#include "../util.h"
+#include "../../util.h"
 
-#if defined(__linux__)
-const char *
-uptime(void)
-{
-	int h;
-	int m;
-	int uptime = 0;
-	struct sysinfo info;
-
-	sysinfo(&info);
-	uptime = info.uptime;
-
-	h = uptime / 3600;
-	m = (uptime - h * 3600) / 60;
-
-	return bprintf("%dh %dm", h, m);
-}
-#elif defined(__OpenBSD__)
 const char *
 uptime(void)
 {
@@ -60,4 +38,3 @@ uptime(void)
 
 	return bprintf("%dh %dm", h, m);
 }
-#endif

@@ -22,7 +22,7 @@ COM =\
 	components/run_command\
 	components/$(OS)/swap \
 	components/$(OS)/temperature \
-	components/uptime\
+	components/$(OS)/uptime \
 	components/user\
 	components/volume\
 	components/wifi
