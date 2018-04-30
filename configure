@@ -1,3 +1,10 @@
 #!/bin/sh
 
-printf 'OS = %s\n' "$(uname)" > os.mk
+os="$(uname)"
+
+printf 'OS = %s\n' "$os" > os.mk
+
+if [ "$os" = "OpenBSD" ]
+then
+	printf 'OSLIBS = -lossaudio\n' >> os.mk
+fi
