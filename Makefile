@@ -18,7 +18,7 @@ COM =\
 	components/keyboard_indicators\
 	components/load_avg\
 	components/num_files\
-	components/ram\
+	components/$(OS)/ram \
 	components/run_command\
 	components/swap\
 	components/temperature\
