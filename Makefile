@@ -49,6 +49,10 @@ config.h:
 clean:
 	rm -f slstatus slstatus.o $(COM:=.o) $(REQ:=.o)
 
+distclean:
+	for os in Linux OpenBSD; do make OS="$$os" clean; done
+	rm -f os.mk
+
 dist:
 	rm -rf "slstatus-$(VERSION)"
 	mkdir -p "slstatus-$(VERSION)/components"
