@@ -11,7 +11,7 @@ COM =\
 	components/$(OS)/cpu \
 	components/datetime\
 	components/disk\
-	components/entropy\
+	components/$(OS)/entropy \
 	components/hostname\
 	components/ip\
 	components/kernel_release\
