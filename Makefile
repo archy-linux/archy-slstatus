@@ -8,7 +8,7 @@ include config.mk
 REQ = util
 COM =\
 	components/$(OS)/battery \
-	components/cpu\
+	components/$(OS)/cpu \
 	components/datetime\
 	components/disk\
 	components/entropy\
