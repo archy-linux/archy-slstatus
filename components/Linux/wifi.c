@@ -1,5 +1,4 @@
 /* See LICENSE file for copyright and license details. */
-#if defined(__linux__)
 #include <errno.h>
 #include <ifaddrs.h>
 #include <linux/wireless.h>
@@ -10,7 +9,7 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-#include "../util.h"
+#include "../../util.h"
 
 const char *
 wifi_perc(const char *iface)
@@ -89,4 +88,3 @@ wifi_essid(const char *iface)
 	else
 		return id;
 }
-#endif
