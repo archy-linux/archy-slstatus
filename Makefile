@@ -2,6 +2,7 @@
 # slstatus - suckless status monitor
 .POSIX:
 
+include os.mk
 include config.mk
 
 REQ = util

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+printf 'OS = %s\n' "$(uname)" > os.mk

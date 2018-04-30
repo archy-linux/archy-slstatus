@@ -36,8 +36,9 @@ In order to build slstatus you need the Xlib header files.
 
 Installation
 ------------
-Edit config.mk to match your local setup (slstatus is installed into the
-/usr/local namespace by default). Uncomment OSSLIBS on OpenBSD.
+Run ./configure first to detect your operating system.
+Optionally edit config.mk to match your local setup (slstatus is installed into
+the /usr/local namespace by default). Uncomment OSSLIBS on OpenBSD.
 
 Afterwards enter the following command to build and install slstatus (if
 necessary as root):
