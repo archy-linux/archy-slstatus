@@ -21,7 +21,7 @@ COM =\
 	components/$(OS)/ram \
 	components/run_command\
 	components/$(OS)/swap \
-	components/temperature\
+	components/$(OS)/temperature \
 	components/uptime\
 	components/user\
 	components/volume\
