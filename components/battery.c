@@ -88,4 +88,41 @@
 
 		return bprintf("%d", apm_info.battery_life);
 	}
+
+	const char *
+	battery_state(const char *bat)
+	{
+		int fd;
+		size_t i;
+		struct apm_power_info apm_info;
+		struct {
+			unsigned int state;
+			char *symbol;
+		} map[] = {
+			{ APM_AC_ON,      "+" },
+			{ APM_AC_OFF,     "-" },
+			{ APM_AC_UNKNOWN, "/" },
+		};
+
+		fd = open("/dev/apm", O_RDONLY);
+		if (fd < 0) {
+			fprintf(stderr, "open '/dev/apm': %s\n", strerror(errno));
+			return NULL;
+		}
+
+		if (ioctl(fd, APM_IOC_GETPOWER, &apm_info) < 0) {
+			fprintf(stderr, "ioctl 'APM_IOC_GETPOWER': %s\n",
+			        strerror(errno));
+			close(fd);
+			return NULL;
+		}
+		close(fd);
+
+		for (i = 0; i < LEN(map); i++) {
+			if (map[i].state == apm_info.ac_state) {
+				break;
+			}
+		}
+		return (i == LEN(map)) ? "?" : map[i].symbol;
+	}
 #endif
