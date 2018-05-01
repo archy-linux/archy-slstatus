@@ -6,29 +6,39 @@
 
 	#include "../util.h"
 
+	static size_t
+	pread(const char *path, char *buf, size_t bufsiz)
+	{
+		FILE *fp;
+		size_t bytes_read;
+
+		if (!(fp = fopen(path, "r"))) {
+			fprintf(stderr, "fopen '%s': %s\n", path,
+			        strerror(errno));
+			return 0;
+		}
+		if ((bytes_read = fread(buf, sizeof(char), bufsiz, fp)) == 0) {
+			fprintf(stderr, "fread '%s': %s\n", path,
+			        strerror(errno));
+			fclose(fp);
+			return 0;
+		}
+		fclose(fp);
+
+		buf[bytes_read] = '\0';
+
+		return bytes_read;
+	}
+
 	const char *
 	swap_free(void)
 	{
 		long total, free;
-		FILE *fp;
-		size_t bytes_read;
 		char *match;
 
-		fp = fopen("/proc/meminfo", "r");
-		if (fp == NULL) {
-			fprintf(stderr, "fopen '/proc/meminfo': %s\n",
-			        strerror(errno));
+		if (!pread("/proc/meminfo", buf, sizeof(buf) - 1)) {
 			return NULL;
 		}
-
-		if ((bytes_read = fread(buf, sizeof(char), sizeof(buf) - 1,
-		                        fp)) == 0) {
-			fprintf(stderr, "fread '/proc/meminfo': %s\n",
-			        strerror(errno));
-			fclose(fp);
-			return NULL;
-		}
-		fclose(fp);
 
 		if ((match = strstr(buf, "SwapTotal")) == NULL)
 			return NULL;
@@ -45,25 +55,11 @@
 	swap_perc(void)
 	{
 		long total, free, cached;
-		FILE *fp;
-		size_t bytes_read;
 		char *match;
 
-		fp = fopen("/proc/meminfo", "r");
-		if (fp == NULL) {
-			fprintf(stderr, "fopen '/proc/meminfo': %s\n",
-			        strerror(errno));
+		if (!pread("/proc/meminfo", buf, sizeof(buf) - 1)) {
 			return NULL;
 		}
-
-		if ((bytes_read = fread(buf, sizeof(char), sizeof(buf) - 1,
-		                        fp)) == 0) {
-			fprintf(stderr, "fread '/proc/meminfo': %s\n",
-			        strerror(errno));
-			fclose(fp);
-			return NULL;
-		}
-		fclose(fp);
 
 		if ((match = strstr(buf, "SwapTotal")) == NULL)
 			return NULL;
@@ -84,24 +80,11 @@
 	swap_total(void)
 	{
 		long total;
-		FILE *fp;
-		size_t bytes_read;
 		char *match;
 
-		fp = fopen("/proc/meminfo", "r");
-		if (fp == NULL) {
-			fprintf(stderr, "fopen '/proc/meminfo': %s\n",
-			        strerror(errno));
+		if (!pread("/proc/meminfo", buf, sizeof(buf) - 1)) {
 			return NULL;
 		}
-		if ((bytes_read = fread(buf, sizeof(char), sizeof(buf) - 1,
-		                        fp)) == 0) {
-			fprintf(stderr, "fread '/proc/meminfo': %s\n",
-			        strerror(errno));
-			fclose(fp);
-			return NULL;
-		}
-		fclose(fp);
 
 		if ((match = strstr(buf, "SwapTotal")) == NULL)
 			return NULL;
@@ -114,24 +97,11 @@
 	swap_used(void)
 	{
 		long total, free, cached;
-		FILE *fp;
-		size_t bytes_read;
 		char *match;
 
-		fp = fopen("/proc/meminfo", "r");
-		if (fp == NULL) {
-			fprintf(stderr, "fopen '/proc/meminfo': %s\n",
-			        strerror(errno));
+		if (!pread("/proc/meminfo", buf, sizeof(buf) - 1)) {
 			return NULL;
 		}
-		if ((bytes_read = fread(buf, sizeof(char), sizeof(buf) - 1,
-		                        fp)) == 0) {
-			fprintf(stderr, "fread '/proc/meminfo': %s\n",
-			        strerror(errno));
-			fclose(fp);
-			return NULL;
-		}
-		fclose(fp);
 
 		if ((match = strstr(buf, "SwapTotal")) == NULL)
 			return NULL;
