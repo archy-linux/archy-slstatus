@@ -13,7 +13,6 @@ static const char unknown_str[] = "n/a";
  * function             description                     argument
  *
  * battery_perc         battery percentage              battery name
- * battery_power        battery power usage             battery name
  * battery_state        battery charging state          battery name
  * cpu_perc             cpu usage in percent            NULL
  * cpu_iowait           cpu iowait in percent           NULL

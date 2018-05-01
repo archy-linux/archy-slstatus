@@ -21,18 +21,6 @@
 	}
 
 	const char *
-	battery_power(const char *bat)
-	{
-		int watts;
-		char path[PATH_MAX];
-
-		snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/",
-		         bat, "/power_now");
-		return (pscanf(path, "%i", &watts) == 1) ?
-		       bprintf("%d", (watts + 500000) / 1000000) : NULL;
-	}
-
-	const char *
 	battery_state(const char *bat)
 	{
 		struct {

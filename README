@@ -6,7 +6,7 @@ slstatus is a suckless status monitor for window managers that use WM_NAME
 
 Features
 --------
-- Battery percentage/power/state
+- Battery percentage/state
 - CPU usage
 - CPU frequency
 - CPU iowait
