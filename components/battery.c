@@ -2,11 +2,19 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#if defined(__linux__)
 #include <limits.h>
 #include <string.h>
+#elif defined(__OpenBSD__)
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <machine/apmvar.h>
+#endif
 
-#include "../../util.h"
+#include "../util.h"
 
+#if defined(__linux__)
 const char *
 battery_perc(const char *bat)
 {
@@ -17,7 +25,31 @@ battery_perc(const char *bat)
 	return (pscanf(path, "%i", &perc) == 1) ?
 	       bprintf("%d", perc) : NULL;
 }
+#elif defined(__OpenBSD__)
+const char *
+battery_perc(const char *null)
+{
+	struct apm_power_info apm_info;
+	int fd;
 
+	fd = open("/dev/apm", O_RDONLY);
+	if (fd < 0) {
+		fprintf(stderr, "open '/dev/apm': %s\n", strerror(errno));
+		return NULL;
+	}
+
+	if (ioctl(fd, APM_IOC_GETPOWER, &apm_info) < 0) {
+		fprintf(stderr, "ioctl 'APM_IOC_GETPOWER': %s\n", strerror(errno));
+		close(fd);
+		return NULL;
+	}
+	close(fd);
+
+	return bprintf("%d", apm_info.battery_life);
+}
+#endif
+
+#if defined(__linux__)
 const char *
 battery_power(const char *bat)
 {
@@ -56,3 +88,4 @@ battery_state(const char *bat)
 	}
 	return (i == LEN(map)) ? "?" : map[i].symbol;
 }
+#endif

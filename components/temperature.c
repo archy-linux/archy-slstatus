@@ -2,12 +2,24 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#if defined(__OpenBSD__)
 #include <sys/sysctl.h>
 #include <sys/time.h>
 #include <sys/sensors.h>
+#endif
 
-#include "../../util.h"
+#include "../util.h"
 
+#if defined(__linux__)
+const char *
+temp(const char *file)
+{
+	int temp;
+
+	return (pscanf(file, "%d", &temp) == 1) ?
+	       bprintf("%d", temp / 1000) : NULL;
+}
+#elif defined(__OpenBSD__)
 const char *
 temp(const char *null)
 {
@@ -30,3 +42,4 @@ temp(const char *null)
 
 	return bprintf("%d", (temp.value - 273150000) / 1000000); /* kelvin to celsius */
 }
+#endif

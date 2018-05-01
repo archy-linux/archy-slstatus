@@ -2,34 +2,29 @@
 # slstatus - suckless status monitor
 .POSIX:
 
-include os.mk
 include config.mk
 
 REQ = util
 COM =\
-	components/$(OS)/battery \
-	components/$(OS)/cpu \
+	components/battery\
+	components/cpu\
 	components/datetime\
 	components/disk\
-	components/$(OS)/entropy \
+	components/entropy\
 	components/hostname\
 	components/ip\
 	components/kernel_release\
 	components/keyboard_indicators\
 	components/load_avg\
 	components/num_files\
-	components/$(OS)/ram \
+	components/ram\
 	components/run_command\
-	components/$(OS)/swap \
-	components/$(OS)/temperature \
-	components/$(OS)/uptime \
+	components/swap\
+	components/temperature\
+	components/uptime\
 	components/user\
 	components/volume\
-	components/$(OS)/wifi
-
-SLSCFLAGS  = -I$(X11INC) -D_DEFAULT_SOURCE $(CFLAGS)
-SLSLDFLAGS = -L$(X11LIB) $(LDFLAGS)
-SLSLIBS    = -lX11 $(OSLIBS) $(LIBS)
+	components/wifi
 
 all: slstatus
 
@@ -41,17 +36,13 @@ config.h:
 	cp config.def.h $@
 
 .o:
-	$(CC) -o $@ $(SLSLDFLAGS) $< $(COM:=.o) $(REQ:=.o) $(SLSLIBS)
+	$(CC) -o $@ $(LDFLAGS) $< $(COM:=.o) $(REQ:=.o) $(LDLIBS)
 
 .c.o:
-	$(CC) -o $@ -c $(SLSCFLAGS) $<
+	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) $<
 
 clean:
 	rm -f slstatus slstatus.o $(COM:=.o) $(REQ:=.o)
-
-distclean:
-	for os in Linux OpenBSD; do make OS="$$os" clean; done
-	rm -f os.mk
 
 dist:
 	rm -rf "slstatus-$(VERSION)"
