@@ -29,7 +29,7 @@ COM =\
 all: slstatus
 
 slstatus: slstatus.o $(COM:=.o) $(REQ:=.o)
-slstatus.o: slstatus.c slstatus.h arg.h config.h $(REQ:=.h)
+slstatus.o: slstatus.c slstatus.h arg.h config.h config.mk $(REQ:=.h)
 $(COM:=.o): config.mk $(REQ:=.h)
 
 config.h:
