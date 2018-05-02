@@ -30,10 +30,11 @@
 			        strerror(errno));
 			return NULL;
 		}
-		if(!(p = fgets(status, 5, fp)) || strcmp(status, "up\n") != 0) {
+		p = fgets(status, 5, fp);
+		fclose(fp);
+		if(!p || strcmp(status, "up\n") != 0) {
 			return NULL;
 		}
-		fclose(fp);
 
 		if (!(fp = fopen("/proc/net/wireless", "r"))) {
 			fprintf(stderr, "fopen '/proc/net/wireless': %s\n",
