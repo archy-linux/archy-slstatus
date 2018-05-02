@@ -25,20 +25,17 @@
 
 		snprintf(path, sizeof(path), "%s%s%s", "/sys/class/net/", iface,
 		         "/operstate");
-		fp = fopen(path, "r");
-		if (fp == NULL) {
+		if (!(fp = fopen(path, "r"))) {
 			fprintf(stderr, "fopen '%s': %s\n", path,
 			        strerror(errno));
 			return NULL;
 		}
-		p = fgets(status, 5, fp);
-		fclose(fp);
-		if(!p || strcmp(status, "up\n") != 0) {
+		if(!(p = fgets(status, 5, fp)) || strcmp(status, "up\n") != 0) {
 			return NULL;
 		}
+		fclose(fp);
 
-		fp = fopen("/proc/net/wireless", "r");
-		if (fp == NULL) {
+		if (!(fp = fopen("/proc/net/wireless", "r"))) {
 			fprintf(stderr, "fopen '/proc/net/wireless': %s\n",
 			        strerror(errno));
 			return NULL;
@@ -92,8 +89,8 @@
 
 		if (strcmp(id, "") == 0)
 			return NULL;
-		else
-			return id;
+
+		return id;
 	}
 #elif defined(__OpenBSD__)
 	/* unimplemented */
