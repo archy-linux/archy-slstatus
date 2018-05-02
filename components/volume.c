@@ -26,7 +26,7 @@ vol_perc(const char *card)
 		return NULL;
 	}
 
-	if (ioctl(afd, SOUND_MIXER_READ_DEVMASK, &devmask) == -1) {
+	if (ioctl(afd, (int)SOUND_MIXER_READ_DEVMASK, &devmask) == -1) {
 		fprintf(stderr, "ioctl 'SOUND_MIXER_READ_DEVMASK': %s\n", strerror(errno));
 		close(afd);
 		return NULL;
