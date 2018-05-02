@@ -30,7 +30,6 @@
 			{ "Charging",    "+" },
 			{ "Discharging", "-" },
 			{ "Full",        "=" },
-			{ "Unknown",     "/" },
 		};
 		size_t i;
 		char path[PATH_MAX], state[12];
@@ -89,7 +88,6 @@
 		} map[] = {
 			{ APM_AC_ON,      "+" },
 			{ APM_AC_OFF,     "-" },
-			{ APM_AC_UNKNOWN, "/" },
 		};
 
 		fd = open("/dev/apm", O_RDONLY);
