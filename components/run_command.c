@@ -11,8 +11,7 @@ run_command(const char *cmd)
 	char *p;
 	FILE *fp;
 
-	fp = popen(cmd, "r");
-	if (fp == NULL) {
+	if (!(fp = popen(cmd, "r"))) {
 		fprintf(stderr, "popen '%s': %s\n", cmd, strerror(errno));
 		return NULL;
 	}
