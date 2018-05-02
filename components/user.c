@@ -17,9 +17,9 @@ gid(void)
 const char *
 username(void)
 {
-	struct passwd *pw = getpwuid(geteuid());
+	struct passwd *pw;
 
-	if (pw == NULL) {
+	if (!(pw = getpwuid(geteuid()))) {
 		fprintf(stderr, "getpwuid '%d': %s\n", geteuid(), strerror(errno));
 		return NULL;
 	}
