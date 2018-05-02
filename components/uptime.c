@@ -1,9 +1,18 @@
 /* See LICENSE file for copyright and license details. */
-#include <errno.h>
 #include <stdio.h>
-#include <string.h>
 
 #include "../util.h"
+
+const char *
+format(int uptime)
+{
+	int h, m;
+
+	h = uptime / 3600;
+	m = (uptime - h * 3600) / 60;
+
+	return bprintf("%dh %dm", h, m);
+}
 
 #if defined(__linux__)
 	#include <sys/sysinfo.h>
@@ -11,31 +20,24 @@
 	const char *
 	uptime(void)
 	{
-		int h;
-		int m;
-		int uptime = 0;
+		int uptime;
 		struct sysinfo info;
 
 		sysinfo(&info);
 		uptime = info.uptime;
 
-		h = uptime / 3600;
-		m = (uptime - h * 3600) / 60;
-
-		return bprintf("%dh %dm", h, m);
+		return format(uptime);
 	}
 #elif defined(__OpenBSD__)
+	#include <errno.h>
+	#include <string.h>
 	#include <sys/sysctl.h>
 	#include <sys/time.h>
 
 	const char *
 	uptime(void)
 	{
-		int h;
-		int m;
-		int uptime = 0;
-
-		int mib[2];
+		int mib[2], uptime;
 		size_t size;
 		time_t now;
 		struct timeval boottime;
@@ -47,16 +49,13 @@
 
 		size = sizeof(boottime);
 
-		if (sysctl(mib, 2, &boottime, &size, NULL, 0) != -1)
-			uptime = now - boottime.tv_sec;
-		else {
+		if (sysctl(mib, 2, &boottime, &size, NULL, 0) == -1)
 			fprintf(stderr, "sysctl 'KERN_BOOTTIME': %s\n", strerror(errno));
 			return NULL;
 		}
 
-		h = uptime / 3600;
-		m = (uptime - h * 3600) / 60;
+		uptime = now - boottime.tv_sec;
 
-		return bprintf("%dh %dm", h, m);
+		return format(uptime);
 	}
 #endif
