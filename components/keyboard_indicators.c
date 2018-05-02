@@ -7,10 +7,10 @@
 const char *
 keyboard_indicators(void)
 {
-	Display *dpy = XOpenDisplay(NULL);
+	Display *dpy;
 	XKeyboardState state;
 
-	if (dpy == NULL) {
+	if (!(dpy = XOpenDisplay(NULL))) {
 		fprintf(stderr, "Cannot open display\n");
 		return NULL;
 	}
