@@ -64,4 +64,3 @@ The following functions are not portable at the moment:
 - wifi_{perc,essid}
 - cpu_{perc,iowait}
 - entropy
-- swap_{free,perc,total,used}

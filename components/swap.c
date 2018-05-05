@@ -1,11 +1,11 @@
 /* See LICENSE file for copyright and license details. */
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "../util.h"
+
 #if defined(__linux__)
-	#include <errno.h>
-	#include <stdio.h>
-	#include <string.h>
-
-	#include "../util.h"
-
 	static size_t
 	pread(const char *path, char *buf, size_t bufsiz)
 	{
@@ -118,5 +118,83 @@
 		return bprintf("%f", (float)(total - free - cached) / 1024 / 1024);
 	}
 #elif defined(__OpenBSD__)
-	/* unimplemented */
+	#include <stdlib.h>
+	#include <sys/param.h> /* dbtob */
+	#include <sys/swap.h>
+	#include <sys/types.h>
+	#include <unistd.h>
+
+	#define	dbtoqb(b) dbtob((int64_t)(b))
+
+	static void
+	getstats(int *total, int *used)
+	{
+		struct swapent *sep, *fsep;
+		int rnswap, nswap, i;
+
+		nswap = swapctl(SWAP_NSWAP, 0, 0);
+		if (nswap < 1)
+			fprintf(stderr, "swaptctl 'SWAP_NSWAP': %s\n", strerror(errno));
+
+		fsep = sep = calloc(nswap, sizeof(*sep));
+		if (sep == NULL)
+			fprintf(stderr, "calloc 'nswap': %s\n", strerror(errno));
+
+		rnswap = swapctl(SWAP_STATS, (void *)sep, nswap);
+		if (rnswap < 0)
+			fprintf(stderr, "swapctl 'SWAP_STATA': %s\n", strerror(errno));
+
+		if (nswap != rnswap)
+			fprintf(stderr, "SWAP_STATS != SWAP_NSWAP\n");
+
+		*total = 0;
+		*used = 0;
+
+		for (i = 0; i < rnswap; i++) {
+			*total += dbtoqb(sep->se_nblks);
+			*used += dbtoqb(sep->se_inuse);
+		}
+
+		free(fsep);
+	}
+
+	const char *
+	swap_free(void)
+	{
+		int total, used;
+
+		getstats(&total, &used);
+
+		return bprintf("%f", (float)(total - used) / 1024 / 1024 / 1024);
+	}
+
+	const char *
+	swap_perc(void)
+	{
+		int total, used;
+
+		getstats(&total, &used);
+
+		return bprintf("%d", 100 * used / total);
+	}
+
+	const char *
+	swap_total(void)
+	{
+		int total, used;
+
+		getstats(&total, &used);
+
+		return bprintf("%f", (float)total / 1024 / 1024 / 1024);
+	}
+
+	const char *
+	swap_used(void)
+	{
+		int total, used;
+
+		getstats(&total, &used);
+
+		return bprintf("%f", (float)used / 1024 / 1024 / 1024);
+	}
 #endif
