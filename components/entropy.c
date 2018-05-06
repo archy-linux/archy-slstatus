@@ -17,6 +17,7 @@
 	const char *
 	entropy(void)
 	{
-		return "∞";
+		/* Unicode Character 'INFINITY' (U+221E) */
+		return "\xe2\x88\x9e";
 	}
 #endif
