@@ -18,17 +18,19 @@ ipv4(const char *iface)
 	int s;
 	char host[NI_MAXHOST];
 
-	if (getifaddrs(&ifaddr) == -1) {
+	if (getifaddrs(&ifaddr) < 0) {
 		fprintf(stderr, "getifaddrs: %s\n", strerror(errno));
 		return NULL;
 	}
 
 	for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
-		if (ifa->ifa_addr == NULL) {
+		if (!ifa->ifa_addr) {
 			continue;
 		}
-		s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in), host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
-		if ((strcmp(ifa->ifa_name, iface) == 0) && (ifa->ifa_addr->sa_family == AF_INET)) {
+		s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in), host,
+		                NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
+		if (!strcmp(ifa->ifa_name, iface) &&
+		    (ifa->ifa_addr->sa_family == AF_INET)) {
 			if (s != 0) {
 				fprintf(stderr, "getnameinfo: %s\n", gai_strerror(s));
 				return NULL;
@@ -49,17 +51,19 @@ ipv6(const char *iface)
 	int s;
 	char host[NI_MAXHOST];
 
-	if (getifaddrs(&ifaddr) == -1) {
+	if (getifaddrs(&ifaddr) < 0) {
 		fprintf(stderr, "getifaddrs: %s\n", strerror(errno));
 		return NULL;
 	}
 
 	for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
-		if (ifa->ifa_addr == NULL) {
+		if (!ifa->ifa_addr) {
 			continue;
 		}
-		s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in6), host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
-		if ((strcmp(ifa->ifa_name, iface) == 0) && (ifa->ifa_addr->sa_family == AF_INET6)) {
+		s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in6), host,
+		                NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
+		if (!strcmp(ifa->ifa_name, iface) &&
+		    (ifa->ifa_addr->sa_family == AF_INET6)) {
 			if (s != 0) {
 				fprintf(stderr, "getnameinfo: %s\n", gai_strerror(s));
 				return NULL;

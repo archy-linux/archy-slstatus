@@ -47,11 +47,13 @@
 				break;
 		}
 		fclose(fp);
-		if (i < 2 || !p)
+		if (i < 2 || !p) {
 			return NULL;
+		}
 
-		if ((datastart = strstr(buf, iface)) == NULL)
+		if (!(datastart = strstr(buf, iface))) {
 			return NULL;
+		}
 
 		datastart = (datastart+(strlen(iface)+1));
 		sscanf(datastart + 1, " %*d   %d  %*d  %*d\t\t  %*d\t   "
@@ -73,23 +75,23 @@
 		wreq.u.essid.length = IW_ESSID_MAX_SIZE+1;
 		snprintf(wreq.ifr_name, sizeof(wreq.ifr_name), "%s", iface);
 
-		if (sockfd == -1) {
+		if (sockfd < 0) {
 			fprintf(stderr, "socket 'AF_INET': %s\n",
 			        strerror(errno));
 			return NULL;
 		}
 		wreq.u.essid.pointer = id;
-		if (ioctl(sockfd,SIOCGIWESSID, &wreq) == -1) {
-			fprintf(stderr, "ioctl 'SIOCGIWESSID': %s\n",
-			        strerror(errno));
+		if (ioctl(sockfd,SIOCGIWESSID, &wreq) < 0) {
+			fprintf(stderr, "ioctl 'SIOCGIWESSID': %s\n", strerror(errno));
 			close(sockfd);
 			return NULL;
 		}
 
 		close(sockfd);
 
-		if (strcmp(id, "") == 0)
+		if (!strcmp(id, "")) {
 			return NULL;
+		}
 
 		return id;
 	}

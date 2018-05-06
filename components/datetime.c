@@ -9,8 +9,9 @@ datetime(const char *fmt)
 	time_t t;
 
 	t = time(NULL);
-	if (strftime(buf, sizeof(buf), fmt, localtime(&t)) == 0)
+	if (!strftime(buf, sizeof(buf), fmt, localtime(&t))) {
 		return NULL;
+	}
 
 	return buf;
 }

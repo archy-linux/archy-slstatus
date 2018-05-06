@@ -16,7 +16,8 @@ disk_free(const char *mnt)
 		return NULL;
 	}
 
-	return bprintf("%f", (float)fs.f_bsize * (float)fs.f_bfree / 1024 / 1024 / 1024);
+	return bprintf("%f",
+	               (float)fs.f_bsize * (float)fs.f_bfree / 1024 / 1024 / 1024);
 }
 
 const char *
@@ -45,7 +46,8 @@ disk_total(const char *mnt)
 		return NULL;
 	}
 
-	return bprintf("%f", (float)fs.f_bsize * (float)fs.f_blocks / 1024 / 1024 / 1024);
+	return bprintf("%f",
+	               (float)fs.f_bsize * (float)fs.f_blocks / 1024 / 1024 / 1024);
 }
 
 const char *
@@ -58,5 +60,7 @@ disk_used(const char *mnt)
 		return NULL;
 	}
 
-	return bprintf("%f", (float)fs.f_bsize * ((float)fs.f_blocks - (float)fs.f_bfree) / 1024 / 1024 / 1024);
+	return bprintf("%f",
+	               (float)fs.f_bsize * ((float)fs.f_blocks -
+	               (float)fs.f_bfree) / 1024 / 1024 / 1024);
 }

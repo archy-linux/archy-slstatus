@@ -35,7 +35,7 @@
 
 		size = sizeof(temp);
 
-		if (sysctl(mib, 5, &temp, &size, NULL, 0) == -1) {
+		if (sysctl(mib, 5, &temp, &size, NULL, 0) < 0) {
 			fprintf(stderr, "sysctl 'SENSOR_TEMP': %s\n",
 			        strerror(errno));
 			return NULL;

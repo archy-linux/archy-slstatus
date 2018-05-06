@@ -18,13 +18,13 @@ keyboard_indicators(void)
 	XCloseDisplay(dpy);
 
 	switch (state.led_mask) {
-		case 1:
-			return "c";
-		case 2:
-			return "n";
-		case 3:
-			return "cn";
-		default:
-			return "";
+	case 1:
+		return "c";
+	case 2:
+		return "n";
+	case 3:
+		return "cn";
+	default:
+		return "";
 	}
 }

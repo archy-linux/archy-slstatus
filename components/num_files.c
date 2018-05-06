@@ -13,14 +13,15 @@ num_files(const char *dir)
 	DIR *fd;
 	int num = 0;
 
-	if ((fd = opendir(dir)) == NULL) {
+	if (!(fd = opendir(dir))) {
 		fprintf(stderr, "opendir '%s': %s\n", dir, strerror(errno));
 		return NULL;
 	}
 
-	while ((dp = readdir(fd)) != NULL) {
-		if (!strcmp(dp->d_name, ".") || !strcmp(dp->d_name, ".."))
+	while ((dp = readdir(fd))) {
+		if (!strcmp(dp->d_name, ".") || !strcmp(dp->d_name, "..")) {
 			continue; /* skip self and parent */
+		}
 		num++;
 	}
 

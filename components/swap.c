@@ -13,13 +13,11 @@
 		size_t bytes_read;
 
 		if (!(fp = fopen(path, "r"))) {
-			fprintf(stderr, "fopen '%s': %s\n", path,
-			        strerror(errno));
+			fprintf(stderr, "fopen '%s': %s\n", path, strerror(errno));
 			return 0;
 		}
-		if ((bytes_read = fread(buf, sizeof(char), bufsiz, fp)) == 0) {
-			fprintf(stderr, "fread '%s': %s\n", path,
-			        strerror(errno));
+		if (!(bytes_read = fread(buf, sizeof(char), bufsiz, fp))) {
+			fprintf(stderr, "fread '%s': %s\n", path, strerror(errno));
 			fclose(fp);
 			return 0;
 		}
@@ -40,12 +38,14 @@
 			return NULL;
 		}
 
-		if ((match = strstr(buf, "SwapTotal")) == NULL)
+		if (!(match = strstr(buf, "SwapTotal"))) {
 			return NULL;
+		}
 		sscanf(match, "SwapTotal: %ld kB\n", &total);
 
-		if ((match = strstr(buf, "SwapFree")) == NULL)
+		if (!(match = strstr(buf, "SwapFree"))) {
 			return NULL;
+		}
 		sscanf(match, "SwapFree: %ld kB\n", &free);
 
 		return bprintf("%f", (float)free / 1024 / 1024);
@@ -61,16 +61,19 @@
 			return NULL;
 		}
 
-		if ((match = strstr(buf, "SwapTotal")) == NULL)
+		if (!(match = strstr(buf, "SwapTotal"))) {
 			return NULL;
+		}
 		sscanf(match, "SwapTotal: %ld kB\n", &total);
 
-		if ((match = strstr(buf, "SwapCached")) == NULL)
+		if (!(match = strstr(buf, "SwapCached"))) {
 			return NULL;
+		}
 		sscanf(match, "SwapCached: %ld kB\n", &cached);
 
-		if ((match = strstr(buf, "SwapFree")) == NULL)
+		if (!(match = strstr(buf, "SwapFree"))) {
 			return NULL;
+		}
 		sscanf(match, "SwapFree: %ld kB\n", &free);
 
 		return bprintf("%d", 100 * (total - free - cached) / total);
@@ -86,8 +89,9 @@
 			return NULL;
 		}
 
-		if ((match = strstr(buf, "SwapTotal")) == NULL)
+		if (!(match = strstr(buf, "SwapTotal"))) {
 			return NULL;
+		}
 		sscanf(match, "SwapTotal: %ld kB\n", &total);
 
 		return bprintf("%f", (float)total / 1024 / 1024);
@@ -103,16 +107,19 @@
 			return NULL;
 		}
 
-		if ((match = strstr(buf, "SwapTotal")) == NULL)
+		if (!(match = strstr(buf, "SwapTotal"))) {
 			return NULL;
+		}
 		sscanf(match, "SwapTotal: %ld kB\n", &total);
 
-		if ((match = strstr(buf, "SwapCached")) == NULL)
+		if (!(match = strstr(buf, "SwapCached"))) {
 			return NULL;
+		}
 		sscanf(match, "SwapCached: %ld kB\n", &cached);
 
-		if ((match = strstr(buf, "SwapFree")) == NULL)
+		if (!(match = strstr(buf, "SwapFree"))) {
 			return NULL;
+		}
 		sscanf(match, "SwapFree: %ld kB\n", &free);
 
 		return bprintf("%f", (float)(total - free - cached) / 1024 / 1024);
@@ -133,19 +140,23 @@
 		int rnswap, nswap, i;
 
 		nswap = swapctl(SWAP_NSWAP, 0, 0);
-		if (nswap < 1)
+		if (nswap < 1) {
 			fprintf(stderr, "swaptctl 'SWAP_NSWAP': %s\n", strerror(errno));
+		}
 
 		fsep = sep = calloc(nswap, sizeof(*sep));
-		if (sep == NULL)
+		if (!sep) {
 			fprintf(stderr, "calloc 'nswap': %s\n", strerror(errno));
+		}
 
 		rnswap = swapctl(SWAP_STATS, (void *)sep, nswap);
-		if (rnswap < 0)
+		if (rnswap < 0) {
 			fprintf(stderr, "swapctl 'SWAP_STATA': %s\n", strerror(errno));
+		}
 
-		if (nswap != rnswap)
+		if (nswap != rnswap) {
 			fprintf(stderr, "SWAP_STATS != SWAP_NSWAP\n");
+		}
 
 		*total = 0;
 		*used = 0;

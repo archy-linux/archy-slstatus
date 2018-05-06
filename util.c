@@ -16,8 +16,9 @@ bprintf(const char *fmt, ...)
 	len = vsnprintf(buf, sizeof(buf) - 1, fmt, ap);
 	va_end(ap);
 
-	if (len >= sizeof(buf))
+	if (len >= sizeof(buf)) {
 		buf[sizeof(buf)-1] = '\0';
+	}
 
 	return buf;
 }

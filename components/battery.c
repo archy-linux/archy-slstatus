@@ -16,8 +16,7 @@
 
 		snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/",
 		         bat, "/capacity");
-		return (pscanf(path, "%i", &perc) == 1) ?
-		       bprintf("%d", perc) : NULL;
+		return (pscanf(path, "%i", &perc) == 1) ? bprintf("%d", perc) : NULL;
 	}
 
 	const char *
