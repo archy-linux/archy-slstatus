@@ -14,5 +14,9 @@
 		       bprintf("%d", num) : NULL;
 	}
 #elif defined(__OpenBSD__)
-	/* unimplemented */
+	const char *
+	entropy(void)
+	{
+		return "∞";
+	}
 #endif
