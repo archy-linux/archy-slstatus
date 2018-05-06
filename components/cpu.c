@@ -68,6 +68,8 @@
 		return bprintf("%d", perc);
 	}
 #elif defined(__OpenBSD__)
+	#include <sys/param.h>
+	#include <sys/sched.h>
 	#include <sys/sysctl.h>
 
 	const char *
@@ -88,5 +90,38 @@
 		}
 
 		return bprintf("%d", freq);
+	}
+
+	const char *
+	cpu_perc(void)
+	{
+		int mib[2], perc;
+		static int valid;
+		static long int a[CPUSTATES];
+		long int b[CPUSTATES];
+		size_t size;
+
+		mib[0] = CTL_KERN;
+		mib[1] = KERN_CPTIME;
+
+		size = sizeof(a);
+
+		memcpy(b, a, sizeof(b));
+		if (sysctl(mib, 2, &a, &size, NULL, 0) == -1) {
+			fprintf(stderr, "sysctl 'KERN_CPTIME': %s\n", strerror(errno));
+			return NULL;
+		}
+		if (!valid) {
+			valid = 1;
+			return NULL;
+		}
+
+		perc = 100 *
+		       ((a[CP_USER]+a[CP_NICE]+a[CP_SYS]+a[CP_INTR]) -
+		        (b[CP_USER]+b[CP_NICE]+b[CP_SYS]+b[CP_INTR])) /
+		       ((a[CP_USER]+a[CP_NICE]+a[CP_SYS]+a[CP_INTR]+a[CP_IDLE]) -
+		        (b[CP_USER]+b[CP_NICE]+b[CP_SYS]+b[CP_INTR]+b[CP_IDLE]));
+
+		return bprintf("%d", perc);
 	}
 #endif
