@@ -23,7 +23,6 @@ disk_free(const char *mnt)
 const char *
 disk_perc(const char *mnt)
 {
-	int perc;
 	struct statvfs fs;
 
 	if (statvfs(mnt, &fs) < 0) {
@@ -31,9 +30,8 @@ disk_perc(const char *mnt)
 		return NULL;
 	}
 
-	perc = 100 * (1.0f - ((float)fs.f_bfree / (float)fs.f_blocks));
-
-	return bprintf("%d", perc);
+	return bprintf("%d", 100 *
+				   (1.0f - ((float)fs.f_bfree / (float)fs.f_blocks)));
 }
 
 const char *
