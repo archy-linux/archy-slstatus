@@ -11,13 +11,14 @@ num_files(const char *dir)
 {
 	struct dirent *dp;
 	DIR *fd;
-	int num = 0;
+	int num;
 
 	if (!(fd = opendir(dir))) {
 		fprintf(stderr, "opendir '%s': %s\n", dir, strerror(errno));
 		return NULL;
 	}
 
+	num = 0;
 	while ((dp = readdir(fd))) {
 		if (!strcmp(dp->d_name, ".") || !strcmp(dp->d_name, "..")) {
 			continue; /* skip self and parent */
