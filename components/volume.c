@@ -1,14 +1,14 @@
 /* See LICENSE file for copyright and license details. */
 #include <errno.h>
 #include <fcntl.h>
-#if defined(__OpenBSD__)
-# include <soundcard.h>
-#else
-# include <sys/soundcard.h>
-#endif
-#include <sys/ioctl.h>
 #include <stdio.h>
 #include <string.h>
+#if defined(__OpenBSD__)
+	#include <soundcard.h>
+#else
+	#include <sys/soundcard.h>
+#endif
+#include <sys/ioctl.h>
 #include <unistd.h>
 
 #include "../util.h"

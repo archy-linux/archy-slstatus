@@ -2,10 +2,10 @@
 #if defined(__linux__)
 	#include <errno.h>
 	#include <ifaddrs.h>
+	#include <limits.h>
 	#include <linux/wireless.h>
 	#include <sys/socket.h>
 	#include <stdio.h>
-	#include <limits.h>
 	#include <string.h>
 	#include <sys/ioctl.h>
 	#include <unistd.h>

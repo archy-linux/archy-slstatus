@@ -54,9 +54,9 @@
 		       NULL;
 	}
 #elif defined(__OpenBSD__)
-	#include <sys/types.h>
-	#include <sys/sysctl.h>
 	#include <stdlib.h>
+	#include <sys/sysctl.h>
+	#include <sys/types.h>
 	#include <unistd.h>
 
 	inline int

@@ -16,9 +16,9 @@
 	#include <errno.h>
 	#include <stdio.h>
 	#include <string.h>
+	#include <sys/sensors.h>
 	#include <sys/sysctl.h>
 	#include <sys/time.h>
-	#include <sys/sensors.h>
 
 	const char *
 	temp(const char *null)
