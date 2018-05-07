@@ -16,7 +16,6 @@
 	wifi_perc(const char *iface)
 	{
 		int i, cur;
-		float perc;
 		int total = 70; /* the max of /proc/net/wireless */
 		char *p, *datastart;
 		char path[PATH_MAX];
@@ -59,9 +58,7 @@
 		sscanf(datastart + 1, " %*d   %d  %*d  %*d\t\t  %*d\t   "
 		       "%*d\t\t%*d\t\t %*d\t  %*d\t\t %*d", &cur);
 
-		perc = (float)cur / total * 100.0;
-
-		return bprintf("%.0f", perc);
+		return bprintf("%d", (int)((float)cur / total * 100));
 	}
 
 	const char *
