@@ -19,9 +19,8 @@
 	const char *
 	cpu_perc(void)
 	{
-		int perc;
-		static long double a[7];
 		static int valid;
+		static long double a[7];
 		long double b[7];
 
 		memcpy(b, a, sizeof(b));
@@ -35,12 +34,11 @@
 			return NULL;
 		}
 
-		perc = 100 * ((b[0] + b[1] + b[2] + b[5] + b[6]) -
-		              (a[0] + a[1] + a[2] + a[5] + a[6])) /
-		             ((b[0] + b[1] + b[2] + b[3] + b[4] + b[5] + b[6]) -
-		              (a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6]));
-
-		return bprintf("%d", perc);
+		return bprintf("%d", 100 *
+					   ((b[0] + b[1] + b[2] + b[5] + b[6]) -
+					   	(a[0] + a[1] + a[2] + a[5] + a[6])) /
+					   ((b[0] + b[1] + b[2] + b[3] + b[4] + b[5] + b[6]) -
+					   	(a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6])));
 	}
 #elif defined(__OpenBSD__)
 	#include <sys/param.h>
@@ -69,7 +67,7 @@
 	const char *
 	cpu_perc(void)
 	{
-		int mib[2], perc;
+		int mib[2];
 		static int valid;
 		static long int a[CPUSTATES];
 		long int b[CPUSTATES];
@@ -90,12 +88,12 @@
 			return NULL;
 		}
 
-		perc = 100 *
-		      ((a[CP_USER] + a[CP_NICE] + a[CP_SYS] + a[CP_INTR]) -
-		       (b[CP_USER] + b[CP_NICE] + b[CP_SYS] + b[CP_INTR])) /
-		      ((a[CP_USER] + a[CP_NICE] + a[CP_SYS] + a[CP_INTR] + a[CP_IDLE]) -
-		       (b[CP_USER] + b[CP_NICE] + b[CP_SYS] + b[CP_INTR] + b[CP_IDLE]));
-
-		return bprintf("%d", perc);
+		return bprintf("%d", 100 *
+					   ((a[CP_USER] + a[CP_NICE] + a[CP_SYS] + a[CP_INTR]) -
+					   	(b[CP_USER] + b[CP_NICE] + b[CP_SYS] + b[CP_INTR])) /
+					   ((a[CP_USER] + a[CP_NICE] + a[CP_SYS] + a[CP_INTR] +
+					   	 a[CP_IDLE]) -
+					   	(b[CP_USER] + b[CP_NICE] + b[CP_SYS] + b[CP_INTR] +
+					   	 b[CP_IDLE])));
 	}
 #endif
