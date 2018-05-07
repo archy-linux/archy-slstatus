@@ -30,8 +30,8 @@ disk_perc(const char *mnt)
 		return NULL;
 	}
 
-	return bprintf("%d", 100 *
-				   (1.0f - ((float)fs.f_bfree / (float)fs.f_blocks)));
+	return bprintf("%d", (int)(100 *
+				   (1.0f - ((float)fs.f_bfree / (float)fs.f_blocks))));
 }
 
 const char *
