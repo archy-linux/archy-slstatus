@@ -16,9 +16,9 @@
 	#include <errno.h>
 	#include <stdio.h>
 	#include <string.h>
+	#include <sys/time.h> /* before <sys/sensors.h> for struct timeval */
 	#include <sys/sensors.h>
 	#include <sys/sysctl.h>
-	#include <sys/time.h>
 
 	const char *
 	temp(const char *null)
