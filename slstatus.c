@@ -98,6 +98,7 @@ main(int argc, char *argv[])
 
 		if (sflag) {
 			printf("%s\n", status);
+			fflush(stdout);
 		} else {
 			XStoreName(dpy, DefaultRootWindow(dpy), status);
 			XSync(dpy, False);
