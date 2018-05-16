@@ -93,5 +93,79 @@
 		return id;
 	}
 #elif defined(__OpenBSD__)
-	/* unimplemented */
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <string.h>
+	#include <errno.h>
+	#include <ifaddrs.h>
+	#include <unistd.h>
+	#include <sys/ioctl.h>
+	#include <sys/types.h>
+	#include <sys/socket.h>
+	#include <net/if.h>
+	#include <net/if_media.h>
+	#include <net80211/ieee80211.h>
+	#include <net80211/ieee80211_ioctl.h>
+
+	#include "../util.h"
+
+	static int
+	load_ieee80211_nodereq(const char *iface, struct ieee80211_nodereq *nr)
+	{
+		struct ieee80211_bssid bssid;
+		int sockfd;
+		memset(&bssid, 0, sizeof(bssid);
+		memset(nr, 0, sizeof(struct ieee80211_nodereq));
+		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
+			fprintf(stderr, "socket 'AF_INET': %s\n",
+				strerror(errno));
+			return 0;
+		}
+		strlcpy(bssid.i_name, iface, sizeof(bssid.i_name));
+		if ((ioctl(sockfd, SIOCG80211BSSID, &bssid)) == -1) {
+			fprintf(stderr, "ioctl 'SIOCG80211BSSID': %s\n",
+				strerror(errno));
+			close(sockfd);
+			return 0;
+		}
+		strlcpy(nr->nr_ifname, iface, sizeof(nr->nr_ifname));
+		memmove(&nr->nr_macaddr, bssid.i_bssid, sizeof(nr->nr_macaddr));
+		if ((ioctl(sockfd, SIOCG80211NODE, nr)) == -1 && nr->nr_rssi) {
+			fprintf(stderr, "ioctl 'SIOCG80211NODE': %s\n",
+				strerror(errno));
+			close(sockfd);
+			return 0;
+		}
+		return close(sockfd), 1;
+
+	}
+
+	const char *
+	wifi_perc(const char *iface)
+	{
+		struct ieee80211_nodereq nr;
+		int q;
+
+		if (load_ieee80211_nodereq(iface, &nr)) {
+			if (nr.nr_max_rssi)
+				q = IEEE80211_NODEREQ_RSSI(&nr);
+			else
+				q = nr.nr_rssi >= -50 ? 100 : (nr.nr_rssi <= -100 ? 0 :
+				(2 * (nr.nr_rssi + 100)));
+			return bprintf("%d", q);
+		}
+		return NULL;
+	}
+
+	const char *
+	wifi_essid(const char *iface)
+	{
+		struct ieee80211_nodereq nr;
+
+		if (load_ieee80211_nodereq(iface, &nr)) {
+			return bprintf("%s", nr.nr_nwid);
+		}
+		return NULL;
+	}
+
 #endif
