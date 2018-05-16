@@ -131,8 +131,6 @@
 	#include <sys/types.h>
 	#include <unistd.h>
 
-	#define	dbtoqb(b) dbtob((int64_t)(b))
-
 	static void
 	getstats(int *total, int *used)
 	{
@@ -162,8 +160,8 @@
 		*used = 0;
 
 		for (i = 0; i < rnswap; i++) {
-			*total += dbtoqb(sep->se_nblks);
-			*used += dbtoqb(sep->se_inuse);
+			*total += sep->se_nblks >> 1;
+			*used += sep->se_inuse >> 1;
 		}
 
 		free(fsep);
@@ -176,7 +174,7 @@
 
 		getstats(&total, &used);
 
-		return bprintf("%f", (float)(total - used) / 1024 / 1024 / 1024);
+		return bprintf("%f", (float)(total - used) / 1024 / 1024);
 	}
 
 	const char *
@@ -196,7 +194,7 @@
 
 		getstats(&total, &used);
 
-		return bprintf("%f", (float)total / 1024 / 1024 / 1024);
+		return bprintf("%f", (float)total / 1024 / 1024);
 	}
 
 	const char *
@@ -206,6 +204,6 @@
 
 		getstats(&total, &used);
 
-		return bprintf("%f", (float)used / 1024 / 1024 / 1024);
+		return bprintf("%f", (float)used / 1024 / 1024);
 	}
 #endif
