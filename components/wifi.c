@@ -106,7 +106,7 @@
 	{
 		struct ieee80211_bssid bssid;
 		int sockfd;
-		memset(&bssid, 0, sizeof(bssid);
+		memset(&bssid, 0, sizeof(bssid));
 		memset(nr, 0, sizeof(struct ieee80211_nodereq));
 		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
 			fprintf(stderr, "socket 'AF_INET': %s\n",
