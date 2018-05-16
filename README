@@ -57,7 +57,4 @@ source code. This keeps it fast, secure and simple.
 
 Todo
 ----
-Porting to OpenBSD is the current goal before thinking about a release.
-
-The following functions are not portable at the moment:
-- wifi_{perc,essid}
+Cleaning up the whole codebase it the goal before thinking about a release.
