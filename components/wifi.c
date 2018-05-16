@@ -106,15 +106,16 @@
 	{
 		struct ieee80211_bssid bssid;
 		int sockfd;
+
 		memset(&bssid, 0, sizeof(bssid));
 		memset(nr, 0, sizeof(struct ieee80211_nodereq));
-		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
+		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 			fprintf(stderr, "socket 'AF_INET': %s\n",
 				strerror(errno));
 			return 0;
 		}
 		strlcpy(bssid.i_name, iface, sizeof(bssid.i_name));
-		if ((ioctl(sockfd, SIOCG80211BSSID, &bssid)) == -1) {
+		if ((ioctl(sockfd, SIOCG80211BSSID, &bssid)) < 0) {
 			fprintf(stderr, "ioctl 'SIOCG80211BSSID': %s\n",
 				strerror(errno));
 			close(sockfd);
@@ -122,14 +123,14 @@
 		}
 		strlcpy(nr->nr_ifname, iface, sizeof(nr->nr_ifname));
 		memmove(&nr->nr_macaddr, bssid.i_bssid, sizeof(nr->nr_macaddr));
-		if ((ioctl(sockfd, SIOCG80211NODE, nr)) == -1 && nr->nr_rssi) {
+		if ((ioctl(sockfd, SIOCG80211NODE, nr)) < 0 && nr->nr_rssi) {
 			fprintf(stderr, "ioctl 'SIOCG80211NODE': %s\n",
 				strerror(errno));
 			close(sockfd);
 			return 0;
 		}
-		return close(sockfd), 1;
 
+		return close(sockfd), 1;
 	}
 
 	const char *
@@ -139,13 +140,15 @@
 		int q;
 
 		if (load_ieee80211_nodereq(iface, &nr)) {
-			if (nr.nr_max_rssi)
+			if (nr.nr_max_rssi) {
 				q = IEEE80211_NODEREQ_RSSI(&nr);
-			else
+			} else {
 				q = nr.nr_rssi >= -50 ? 100 : (nr.nr_rssi <= -100 ? 0 :
 				(2 * (nr.nr_rssi + 100)));
+			}
 			return bprintf("%d", q);
 		}
+
 		return NULL;
 	}
 
@@ -157,7 +160,7 @@
 		if (load_ieee80211_nodereq(iface, &nr)) {
 			return bprintf("%s", nr.nr_nwid);
 		}
+
 		return NULL;
 	}
-
 #endif
