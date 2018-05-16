@@ -1,16 +1,17 @@
 /* See LICENSE file for copyright and license details. */
+#include <errno.h>
+#include <ifaddrs.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+
+#include "../util.h"
+
 #if defined(__linux__)
-	#include <errno.h>
-	#include <ifaddrs.h>
 	#include <limits.h>
 	#include <linux/wireless.h>
-	#include <sys/socket.h>
-	#include <stdio.h>
-	#include <string.h>
-	#include <sys/ioctl.h>
-	#include <unistd.h>
-
-	#include "../util.h"
 
 	const char *
 	wifi_perc(const char *iface)
@@ -93,21 +94,12 @@
 		return id;
 	}
 #elif defined(__OpenBSD__)
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include <string.h>
-	#include <errno.h>
-	#include <ifaddrs.h>
-	#include <unistd.h>
-	#include <sys/ioctl.h>
-	#include <sys/types.h>
-	#include <sys/socket.h>
 	#include <net/if.h>
 	#include <net/if_media.h>
 	#include <net80211/ieee80211.h>
 	#include <net80211/ieee80211_ioctl.h>
-
-	#include "../util.h"
+	#include <stdlib.h>
+	#include <sys/types.h>
 
 	static int
 	load_ieee80211_nodereq(const char *iface, struct ieee80211_nodereq *nr)
