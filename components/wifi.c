@@ -66,14 +66,14 @@
 	wifi_essid(const char *iface)
 	{
 		static char id[IW_ESSID_MAX_SIZE+1];
-		int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+		int sockfd;
 		struct iwreq wreq;
 
 		memset(&wreq, 0, sizeof(struct iwreq));
 		wreq.u.essid.length = IW_ESSID_MAX_SIZE+1;
 		snprintf(wreq.ifr_name, sizeof(wreq.ifr_name), "%s", iface);
 
-		if (sockfd < 0) {
+		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 			fprintf(stderr, "socket 'AF_INET': %s\n",
 			        strerror(errno));
 			return NULL;
