@@ -19,7 +19,7 @@ struct arg {
 
 char *argv0;
 char buf[1024];
-static unsigned short int done;
+static int done;
 static Display *dpy;
 
 #include "config.h"
