@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#include <errno.h>
 #include <locale.h>
 #include <signal.h>
 #include <stdio.h>
@@ -53,7 +54,7 @@ main(int argc, char *argv[])
 	struct sigaction act;
 	struct timespec start, current, diff, intspec, wait;
 	size_t i, len;
-	int sflag;
+	int sflag, ret;
 	char status[MAXLEN];
 
 	sflag = 0;
@@ -88,12 +89,16 @@ main(int argc, char *argv[])
 		for (i = len = 0; i < LEN(args); i++) {
 			const char * res = args[i].func(args[i].args);
 			res = (res == NULL) ? unknown_str : res;
-			len += snprintf(status + len, sizeof(status) - len,
-			                args[i].fmt, res);
-
-			if (len >= sizeof(status)) {
-				status[sizeof(status) - 1] = '\0';
+			if ((ret = snprintf(status + len, sizeof(status) - len,
+			                    args[i].fmt, res)) < 0) {
+				fprintf(stderr, "snprintf: %s\n",
+				        strerror(errno));
+				break;
+			} else if ((size_t)ret >= sizeof(status) - len) {
+				fprintf(stderr, "snprintf: Output truncated\n");
+				break;
 			}
+			len += ret;
 		}
 
 		if (sflag) {

@@ -10,15 +10,15 @@ const char *
 bprintf(const char *fmt, ...)
 {
 	va_list ap;
-	size_t len;
+	int ret;
 
 	va_start(ap, fmt);
-	len = vsnprintf(buf, sizeof(buf) - 1, fmt, ap);
-	va_end(ap);
-
-	if (len >= sizeof(buf)) {
-		buf[sizeof(buf)-1] = '\0';
+	if ((ret = vsnprintf(buf, sizeof(buf), fmt, ap)) < 0) {
+		fprintf(stderr, "vsnprintf: %s\n", strerror(errno));
+	} else if ((size_t)ret >= sizeof(buf)) {
+		fprintf(stderr, "vsnprintf: Output truncated\n");
 	}
+	va_end(ap);
 
 	return buf;
 }
