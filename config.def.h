@@ -43,6 +43,7 @@ static const char unknown_str[] = "n/a";
  * swap_used            used swap in GB                 NULL
  * temp                 temperature in degree celsius   sensor file
  *                                                      (/sys/class/thermal/...)
+ *                                                      NULL on OpenBSD
  * uid                  UID of current user             NULL
  * uptime               system uptime                   NULL
  * username             username of current user        NULL
