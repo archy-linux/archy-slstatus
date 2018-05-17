@@ -122,7 +122,7 @@
 			return 0;
 		}
 		strlcpy(nr->nr_ifname, iface, sizeof(nr->nr_ifname));
-		memmove(&nr->nr_macaddr, bssid.i_bssid, sizeof(nr->nr_macaddr));
+		memcpy(&nr->nr_macaddr, bssid.i_bssid, sizeof(nr->nr_macaddr));
 		if ((ioctl(sockfd, SIOCG80211NODE, nr)) < 0 && nr->nr_rssi) {
 			fprintf(stderr, "ioctl 'SIOCG80211NODE': %s\n",
 				strerror(errno));
