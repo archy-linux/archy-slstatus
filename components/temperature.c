@@ -21,11 +21,13 @@
 	#include <sys/sysctl.h>
 
 	const char *
-	temp(const char *null)
+	temp(const char *file)
 	{
 		int mib[5];
 		size_t size;
 		struct sensor temp;
+
+		UNUSED(file); /* no temperature file on OpenBSD */
 
 		mib[0] = CTL_HW;
 		mib[1] = HW_SENSORS;

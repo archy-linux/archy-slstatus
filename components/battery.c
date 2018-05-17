@@ -52,10 +52,12 @@
 	#include <unistd.h>
 
 	const char *
-	battery_perc(const char *null)
+	battery_perc(const char *bat)
 	{
 		struct apm_power_info apm_info;
 		int fd;
+
+		UNUSED(bat); /* no way to specify battery on OpenBSD */
 
 		fd = open("/dev/apm", O_RDONLY);
 		if (fd < 0) {
@@ -87,6 +89,8 @@
 			{ APM_AC_ON,      "+" },
 			{ APM_AC_OFF,     "-" },
 		};
+
+		UNUSED(bat); /* no way to specify battery on OpenBSD */
 
 		fd = open("/dev/apm", O_RDONLY);
 		if (fd < 0) {
