@@ -16,7 +16,7 @@
 const char *
 vol_perc(const char *card)
 {
-	unsigned int i;
+	size_t i;
 	int v, afd, devmask;
 	char *vnames[] = SOUND_DEVICE_NAMES;
 
@@ -34,7 +34,7 @@ vol_perc(const char *card)
 	for (i = 0; i < LEN(vnames); i++) {
 		if (devmask & (1 << i) && !strcmp("vol", vnames[i])) {
 			if (ioctl(afd, MIXER_READ(i), &v) < 0) {
-				fprintf(stderr, "ioctl 'MIXER_READ(%d)': %s\n", i,
+				fprintf(stderr, "ioctl 'MIXER_READ(%ld)': %s\n", i,
 				        strerror(errno));
 				close(afd);
 				return NULL;

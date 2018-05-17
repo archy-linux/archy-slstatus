@@ -77,8 +77,7 @@
 	const char *
 	battery_state(const char *bat)
 	{
-		int fd;
-		size_t i;
+		int fd, i;
 		struct apm_power_info apm_info;
 		struct {
 			unsigned int state;
