@@ -3,8 +3,8 @@
 #include <ifaddrs.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/socket.h>
 #include <sys/ioctl.h>
+#include <sys/socket.h>
 #include <unistd.h>
 
 #include "../util.h"
@@ -97,6 +97,7 @@
 	#include <net/if.h>
 	#include <net/if_media.h>
 	#include <net80211/ieee80211.h>
+	#include <sys/select.h> /* before <sys/ieee80211_ioctl.h> for NBBY */
 	#include <net80211/ieee80211_ioctl.h>
 	#include <stdlib.h>
 	#include <sys/types.h>
