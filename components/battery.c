@@ -5,6 +5,14 @@
 
 #include "../util.h"
 
+static struct {
+	char *state;
+	char *symbol;
+} map[] = {
+	{ "Charging",    "+" },
+	{ "Discharging", "-" },
+};
+
 #if defined(__linux__)
 	#include <limits.h>
 
@@ -22,13 +30,6 @@
 	const char *
 	battery_state(const char *bat)
 	{
-		struct {
-			char *state;
-			char *symbol;
-		} map[] = {
-			{ "Charging",    "+" },
-			{ "Discharging", "-" },
-		};
 		size_t i;
 		char path[PATH_MAX], state[12];
 
@@ -123,13 +124,6 @@
 	{
 		struct apm_power_info apm_info;
 		size_t i;
-		struct {
-			unsigned int state;
-			char *symbol;
-		} map[] = {
-			{ APM_AC_ON,      "+" },
-			{ APM_AC_OFF,     "-" },
-		};
 
 		if (load_apm_power_info(&apm_info)) {
 			for (i = 0; i < LEN(map); i++) {
