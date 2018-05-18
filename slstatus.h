@@ -37,6 +37,10 @@ const char *keyboard_indicators(void);
 /* load_avg */
 const char *load_avg(const char *);
 
+/* netspeeds */
+const char *netspeed_rx(const char *);
+const char *netspeed_tx(const char *);
+
 /* num_files */
 const char *num_files(const char *);
 
