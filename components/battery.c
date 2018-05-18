@@ -125,7 +125,7 @@
 				return bprintf("%u:%02u", apm_info.minutes_left / 60,
 				               apm_info.minutes_left % 60);
 			} else {
-				return strdup("");
+				return "";
 			}
 		}
 
