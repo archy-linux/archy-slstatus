@@ -14,7 +14,7 @@
 		               "MemFree: %ld kB\n"
 		               "MemAvailable: %ld kB\n",
 		               &free, &free, &free) == 3) ?
-		       bprintf("%f", (float)free / 1024 / 1024) : NULL;
+		       fmt_scaled(free * 1024) : NULL;
 	}
 
 	const char *
@@ -39,7 +39,7 @@
 		long total;
 
 		return (pscanf("/proc/meminfo", "MemTotal: %ld kB\n", &total) == 1) ?
-		       bprintf("%f", (float)total / 1024 / 1024) : NULL;
+		       fmt_scaled(total * 1024) : NULL;
 	}
 
 	const char *
@@ -53,9 +53,7 @@
 		               "MemAvailable: %ld kB\nBuffers: %ld kB\n"
 		               "Cached: %ld kB\n",
 		               &total, &free, &buffers, &buffers, &cached) == 5) ?
-		       bprintf("%f", (float)(total - free - buffers - cached) /
-		               1024 / 1024) :
-		       NULL;
+		       fmt_scaled((total - free - buffers - cached) * 1024) : NULL;
 	}
 #elif defined(__OpenBSD__)
 	#include <stdlib.h>
@@ -81,13 +79,11 @@
 	ram_free(void)
 	{
 		struct uvmexp uvmexp;
-		float free;
 		int free_pages;
 
 		if (load_uvmexp(&uvmexp)) {
 			free_pages = uvmexp.npages - uvmexp.active;
-			free = (float)(pagetok(free_pages, uvmexp.pageshift)) / 1024 / 1024;
-			return bprintf("%f", free);
+			return fmt_scaled(pagetok(free_pages, uvmexp.pageshift) * 1024);
 		}
 
 		return NULL;
@@ -111,11 +107,9 @@
 	ram_total(void)
 	{
 		struct uvmexp uvmexp;
-		float total;
 
 		if (load_uvmexp(&uvmexp)) {
-			total = (float)(pagetok(uvmexp.npages, uvmexp.pageshift)) / 1024 / 1024;
-			return bprintf("%f", total);
+			return fmt_scaled(pagetok(uvmexp.npages, uvmexp.pageshift) * 1024);
 		}
 
 		return NULL;
@@ -125,11 +119,9 @@
 	ram_used(void)
 	{
 		struct uvmexp uvmexp;
-		float used;
 
 		if (load_uvmexp(&uvmexp)) {
-			used = (float)(pagetok(uvmexp.active, uvmexp.pageshift)) / 1024 / 1024;
-			return bprintf("%f", used);
+			return fmt_scaled(pagetok(uvmexp.active, uvmexp.pageshift) * 1024);
 		}
 
 		return NULL;
