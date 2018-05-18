@@ -49,8 +49,36 @@
 	const char *
 	battery_remaining(const char *bat)
 	{
-		/* TODO: Implement */
-		return NULL;
+		int charge_now, current_now, m, h;
+		float timeleft;
+		char path[PATH_MAX], state[12];
+
+		snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/",
+		         bat, "/status");
+		if (pscanf(path, "%12s", state) != 1) {
+			return NULL;
+		}
+
+		if (!strcmp(state, "Discharging")) {
+			snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/",
+					 bat, "/charge_now");
+			if (pscanf(path, "%i", &charge_now) != 1) {
+				return NULL;
+			}
+			snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/",
+					 bat, "/current_now");
+			if (pscanf(path, "%i", &current_now) != 1) {
+				return NULL;
+			}
+
+			timeleft = (float)charge_now / (float)current_now;
+			h = timeleft;
+			m = (timeleft - (float)h) * 60;
+
+			return bprintf("%dh %dm", h, m);
+		}
+
+		return "";
 	}
 #elif defined(__OpenBSD__)
 	#include <fcntl.h>
@@ -122,7 +150,7 @@
 
 		if (load_apm_power_info(&apm_info)) {
 			if (apm_info.ac_state != APM_AC_ON) {
-				return bprintf("%u:%02u", apm_info.minutes_left / 60,
+				return bprintf("%uh %02um", apm_info.minutes_left / 60,
 				               apm_info.minutes_left % 60);
 			} else {
 				return "";
