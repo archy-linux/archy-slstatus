@@ -2,9 +2,51 @@
 #include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "util.h"
+
+char *argv0;
+
+static void
+verr(const char *fmt, va_list ap)
+{
+	if (argv0 && strncmp(fmt, "usage", sizeof("usage") - 1)) {
+		fprintf(stderr, "%s: ", argv0);
+	}
+
+	vfprintf(stderr, fmt, ap);
+
+	if (fmt[0] && fmt[strlen(fmt) - 1] == ':') {
+		fputc(' ', stderr);
+		perror(NULL);
+	} else {
+		fputc('\n', stderr);
+	}
+}
+
+void
+warn(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	verr(fmt, ap);
+	va_end(ap);
+}
+
+void
+die(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	verr(fmt, ap);
+	va_end(ap);
+
+	exit(1);
+}
 
 const char *
 bprintf(const char *fmt, ...)
@@ -14,9 +56,9 @@ bprintf(const char *fmt, ...)
 
 	va_start(ap, fmt);
 	if ((ret = vsnprintf(buf, sizeof(buf), fmt, ap)) < 0) {
-		fprintf(stderr, "vsnprintf: %s\n", strerror(errno));
+		warn("vsnprintf:");
 	} else if ((size_t)ret >= sizeof(buf)) {
-		fprintf(stderr, "vsnprintf: Output truncated\n");
+		warn("vsnprintf: Output truncated");
 	}
 	va_end(ap);
 
@@ -31,7 +73,7 @@ pscanf(const char *path, const char *fmt, ...)
 	int n;
 
 	if (!(fp = fopen(path, "r"))) {
-		fprintf(stderr, "fopen '%s': %s\n", path, strerror(errno));
+		warn("fopen '%s':", path);
 		return -1;
 	}
 	va_start(ap, fmt);

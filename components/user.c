@@ -20,7 +20,7 @@ username(void)
 	struct passwd *pw;
 
 	if (!(pw = getpwuid(geteuid()))) {
-		fprintf(stderr, "getpwuid '%d': %s\n", geteuid(), strerror(errno));
+		warn("getpwuid '%d':", geteuid());
 		return NULL;
 	}
 

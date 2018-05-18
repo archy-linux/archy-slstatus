@@ -13,11 +13,11 @@
 		size_t bytes_read;
 
 		if (!(fp = fopen(path, "r"))) {
-			fprintf(stderr, "fopen '%s': %s\n", path, strerror(errno));
+			warn("fopen '%s':", path);
 			return 0;
 		}
 		if (!(bytes_read = fread(buf, sizeof(char), bufsiz, fp))) {
-			fprintf(stderr, "fread '%s': %s\n", path, strerror(errno));
+			warn("fread '%s':", path);
 			fclose(fp);
 			return 0;
 		}
@@ -139,21 +139,21 @@
 
 		nswap = swapctl(SWAP_NSWAP, 0, 0);
 		if (nswap < 1) {
-			fprintf(stderr, "swaptctl 'SWAP_NSWAP': %s\n", strerror(errno));
+			warn("swaptctl 'SWAP_NSWAP':");
 		}
 
 		fsep = sep = calloc(nswap, sizeof(*sep));
 		if (!sep) {
-			fprintf(stderr, "calloc 'nswap': %s\n", strerror(errno));
+			warn("calloc 'nswap':");
 		}
 
 		rnswap = swapctl(SWAP_STATS, (void *)sep, nswap);
 		if (rnswap < 0) {
-			fprintf(stderr, "swapctl 'SWAP_STATA': %s\n", strerror(errno));
+			warn("swapctl 'SWAP_STATA':");
 		}
 
 		if (nswap != rnswap) {
-			fprintf(stderr, "SWAP_STATS != SWAP_NSWAP\n");
+			warn("getstats: SWAP_STATS != SWAP_NSWAP");
 		}
 
 		*total = 0;

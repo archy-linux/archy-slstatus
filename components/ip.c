@@ -19,7 +19,7 @@ ipv4(const char *iface)
 	char host[NI_MAXHOST];
 
 	if (getifaddrs(&ifaddr) < 0) {
-		fprintf(stderr, "getifaddrs: %s\n", strerror(errno));
+		warn("getifaddrs:");
 		return NULL;
 	}
 
@@ -32,7 +32,7 @@ ipv4(const char *iface)
 		if (!strcmp(ifa->ifa_name, iface) &&
 		    (ifa->ifa_addr->sa_family == AF_INET)) {
 			if (s != 0) {
-				fprintf(stderr, "getnameinfo: %s\n", gai_strerror(s));
+				warn("getnameinfo: %s", gai_strerror(s));
 				return NULL;
 			}
 			return bprintf("%s", host);
@@ -52,7 +52,7 @@ ipv6(const char *iface)
 	char host[NI_MAXHOST];
 
 	if (getifaddrs(&ifaddr) < 0) {
-		fprintf(stderr, "getifaddrs: %s\n", strerror(errno));
+		warn("getifaddrs:");
 		return NULL;
 	}
 
@@ -65,7 +65,7 @@ ipv6(const char *iface)
 		if (!strcmp(ifa->ifa_name, iface) &&
 		    (ifa->ifa_addr->sa_family == AF_INET6)) {
 			if (s != 0) {
-				fprintf(stderr, "getnameinfo: %s\n", gai_strerror(s));
+				warn("getnameinfo: %s", gai_strerror(s));
 				return NULL;
 			}
 			return bprintf("%s", host);

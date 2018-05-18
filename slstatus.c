@@ -17,7 +17,6 @@ struct arg {
 	const char *args;
 };
 
-char *argv0;
 char buf[1024];
 static int done;
 static Display *dpy;
@@ -43,8 +42,7 @@ difftimespec(struct timespec *res, struct timespec *a, struct timespec *b)
 static void
 usage(void)
 {
-	fprintf(stderr, "usage: %s [-s]\n", argv0);
-	exit(1);
+	die("usage: %s [-s]", argv0);
 }
 
 int
@@ -80,14 +78,12 @@ main(int argc, char *argv[])
 	}
 
 	if (!sflag && !(dpy = XOpenDisplay(NULL))) {
-		fprintf(stderr, "XOpenDisplay: Failed to open display\n");
-		return 1;
+		die("XOpenDisplay: Failed to open display");
 	}
 
 	while (!done) {
 		if (clock_gettime(CLOCK_MONOTONIC, &start) < 0) {
-			fprintf(stderr, "clock_gettime: %s\n", strerror(errno));
-			return 1;
+			die("clock_gettime:");
 		}
 
 		status[0] = '\0';
@@ -97,11 +93,10 @@ main(int argc, char *argv[])
 			}
 			if ((ret = snprintf(status + len, sizeof(status) - len,
 			                    args[i].fmt, res)) < 0) {
-				fprintf(stderr, "snprintf: %s\n",
-				        strerror(errno));
+				warn("snprintf:");
 				break;
 			} else if ((size_t)ret >= sizeof(status) - len) {
-				fprintf(stderr, "snprintf: Output truncated\n");
+				warn("snprintf: Output truncated");
 				break;
 			}
 			len += ret;
@@ -111,18 +106,14 @@ main(int argc, char *argv[])
 			printf("%s\n", status);
 		} else {
 			if (XStoreName(dpy, DefaultRootWindow(dpy), status) < 0) {
-				fprintf(stderr,
-				        "XStoreName: Allocation failed\n");
-				return 1;
+				die("XStoreName: Allocation failed");
 			}
 			XFlush(dpy);
 		}
 
 		if (!done) {
 			if (clock_gettime(CLOCK_MONOTONIC, &current) < 0) {
-				fprintf(stderr, "clock_gettime: %s\n",
-				        strerror(errno));
-				return 1;
+				die("clock_gettime:");
 			}
 			difftimespec(&diff, &current, &start);
 
@@ -133,9 +124,7 @@ main(int argc, char *argv[])
 			if (wait.tv_sec >= 0) {
 				if (nanosleep(&wait, NULL) < 0 &&
 				    errno != EINTR) {
-					fprintf(stderr, "nanosleep: %s\n",
-					        strerror(errno));
-					return 1;
+					die("nanosleep:");
 				}
 			}
 		}
@@ -144,9 +133,7 @@ main(int argc, char *argv[])
 	if (!sflag) {
 		XStoreName(dpy, DefaultRootWindow(dpy), NULL);
 		if (XCloseDisplay(dpy) < 0) {
-			fprintf(stderr,
-			        "XCloseDisplay: Failed to close display\n");
-			return 1;
+			die("XCloseDisplay: Failed to close display");
 		}
 	}
 

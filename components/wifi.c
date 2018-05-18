@@ -26,8 +26,7 @@
 		snprintf(path, sizeof(path), "%s%s%s", "/sys/class/net/", iface,
 		         "/operstate");
 		if (!(fp = fopen(path, "r"))) {
-			fprintf(stderr, "fopen '%s': %s\n", path,
-			        strerror(errno));
+			warn("fopen '%s':", path);
 			return NULL;
 		}
 		p = fgets(status, 5, fp);
@@ -37,8 +36,7 @@
 		}
 
 		if (!(fp = fopen("/proc/net/wireless", "r"))) {
-			fprintf(stderr, "fopen '/proc/net/wireless': %s\n",
-			        strerror(errno));
+			warn("fopen '/proc/net/wireless':");
 			return NULL;
 		}
 
@@ -74,13 +72,12 @@
 		snprintf(wreq.ifr_name, sizeof(wreq.ifr_name), "%s", iface);
 
 		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-			fprintf(stderr, "socket 'AF_INET': %s\n",
-			        strerror(errno));
+			warn("socket 'AF_INET':");
 			return NULL;
 		}
 		wreq.u.essid.pointer = id;
 		if (ioctl(sockfd,SIOCGIWESSID, &wreq) < 0) {
-			fprintf(stderr, "ioctl 'SIOCGIWESSID': %s\n", strerror(errno));
+			warn("ioctl 'SIOCGIWESSID':");
 			close(sockfd);
 			return NULL;
 		}
@@ -111,22 +108,19 @@
 		memset(&bssid, 0, sizeof(bssid));
 		memset(nr, 0, sizeof(struct ieee80211_nodereq));
 		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-			fprintf(stderr, "socket 'AF_INET': %s\n",
-				strerror(errno));
+			warn("socket 'AF_INET':");
 			return 0;
 		}
 		strlcpy(bssid.i_name, iface, sizeof(bssid.i_name));
 		if ((ioctl(sockfd, SIOCG80211BSSID, &bssid)) < 0) {
-			fprintf(stderr, "ioctl 'SIOCG80211BSSID': %s\n",
-				strerror(errno));
+			warn("ioctl 'SIOCG80211BSSID':");
 			close(sockfd);
 			return 0;
 		}
 		strlcpy(nr->nr_ifname, iface, sizeof(nr->nr_ifname));
 		memcpy(&nr->nr_macaddr, bssid.i_bssid, sizeof(nr->nr_macaddr));
 		if ((ioctl(sockfd, SIOCG80211NODE, nr)) < 0 && nr->nr_rssi) {
-			fprintf(stderr, "ioctl 'SIOCG80211NODE': %s\n",
-				strerror(errno));
+			warn("ioctl 'SIOCG80211NODE':");
 			close(sockfd);
 			return 0;
 		}

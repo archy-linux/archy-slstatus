@@ -12,7 +12,7 @@ kernel_release(void)
 	struct utsname udata;
 
 	if (uname(&udata) < 0) {
-		fprintf(stderr, "uname: %s\n", strerror(errno));
+		warn("uname:");
 		return NULL;
 	}
 

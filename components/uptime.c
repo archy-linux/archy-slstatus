@@ -50,7 +50,7 @@ format(int uptime)
 		size = sizeof(boottime);
 
 		if (sysctl(mib, 2, &boottime, &size, NULL, 0) < 0) {
-			fprintf(stderr, "sysctl 'KERN_BOOTTIME': %s\n", strerror(errno));
+			warn("sysctl 'KERN_BOOTTIME':");
 			return NULL;
 		}
 

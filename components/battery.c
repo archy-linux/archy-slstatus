@@ -59,13 +59,12 @@
 
 		fd = open("/dev/apm", O_RDONLY);
 		if (fd < 0) {
-			fprintf(stderr, "open '/dev/apm': %s\n", strerror(errno));
+			warn("open '/dev/apm':");
 			return NULL;
 		}
 
 		if (ioctl(fd, APM_IOC_GETPOWER, &apm_info) < 0) {
-			fprintf(stderr, "ioctl 'APM_IOC_GETPOWER': %s\n",
-			        strerror(errno));
+			warn("ioctl 'APM_IOC_GETPOWER':");
 			close(fd);
 			return NULL;
 		}
@@ -90,13 +89,12 @@
 
 		fd = open("/dev/apm", O_RDONLY);
 		if (fd < 0) {
-			fprintf(stderr, "open '/dev/apm': %s\n", strerror(errno));
+			warn("open '/dev/apm':");
 			return NULL;
 		}
 
 		if (ioctl(fd, APM_IOC_GETPOWER, &apm_info) < 0) {
-			fprintf(stderr, "ioctl 'APM_IOC_GETPOWER': %s\n",
-			        strerror(errno));
+			warn("ioctl 'APM_IOC_GETPOWER':");
 			close(fd);
 			return NULL;
 		}

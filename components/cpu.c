@@ -57,7 +57,7 @@
 		size = sizeof(freq);
 
 		if (sysctl(mib, 2, &freq, &size, NULL, 0) < 0) {
-			fprintf(stderr, "sysctl 'HW_CPUSPEED': %s\n", strerror(errno));
+			warn("sysctl 'HW_CPUSPEED':");
 			return NULL;
 		}
 
@@ -80,7 +80,7 @@
 
 		memcpy(b, a, sizeof(b));
 		if (sysctl(mib, 2, &a, &size, NULL, 0) < 0) {
-			fprintf(stderr, "sysctl 'KERN_CPTIME': %s\n", strerror(errno));
+			warn("sysctl 'KERN_CPTIME':");
 			return NULL;
 		}
 		if (!valid) {

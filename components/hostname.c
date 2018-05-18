@@ -10,7 +10,7 @@ const char *
 hostname(void)
 {
 	if (gethostname(buf, sizeof(buf)) < 0) {
-		fprintf(stderr, "gethostbyname: %s\n", strerror(errno));
+		warn("gethostbyname:");
 		return NULL;
 	}
 

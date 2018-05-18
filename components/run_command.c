@@ -12,7 +12,7 @@ run_command(const char *cmd)
 	FILE *fp;
 
 	if (!(fp = popen(cmd, "r"))) {
-		fprintf(stderr, "popen '%s': %s\n", cmd, strerror(errno));
+		warn("popen '%s':", cmd);
 		return NULL;
 	}
 	p = fgets(buf, sizeof(buf) - 1, fp);

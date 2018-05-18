@@ -14,7 +14,7 @@ num_files(const char *dir)
 	int num;
 
 	if (!(fd = opendir(dir))) {
-		fprintf(stderr, "opendir '%s': %s\n", dir, strerror(errno));
+		warn("opendir '%s':", dir);
 		return NULL;
 	}
 
