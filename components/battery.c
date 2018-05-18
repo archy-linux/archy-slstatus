@@ -121,8 +121,12 @@
 		struct apm_power_info apm_info;
 
 		if (load_apm_power_info(&apm_info)) {
-			return bprintf("%u:%02u", apm_info.minutes_left / 60,
-			               apm_info.minutes_left % 60);
+			if (apm_info.ac_state != APM_AC_ON) {
+				return bprintf("%u:%02u", apm_info.minutes_left / 60,
+				               apm_info.minutes_left % 60);
+			} else {
+				return strdup("");
+			}
 		}
 
 		return NULL;
