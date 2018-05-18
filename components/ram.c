@@ -9,7 +9,11 @@
 	{
 		long free;
 
-		return (pscanf("/proc/meminfo", "MemFree: %ld kB\n", &free) == 1) ?
+		return (pscanf("/proc/meminfo",
+		               "MemTotal: %ld kB\n"
+		               "MemFree: %ld kB\n"
+		               "MemAvailable: %ld kB\n",
+		               &free, &free, &free) == 3) ?
 		       bprintf("%f", (float)free / 1024 / 1024) : NULL;
 	}
 
