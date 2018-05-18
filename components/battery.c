@@ -122,7 +122,7 @@
 
 		if (load_apm_power_info(&apm_info)) {
 			return bprintf("%u:%02u", apm_info.minutes_left / 60,
-				       apm_info.minutes_left % 60);
+			               apm_info.minutes_left % 60);
 		}
 
 		return NULL;
