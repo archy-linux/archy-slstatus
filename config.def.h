@@ -34,6 +34,8 @@ static const char unknown_str[] = "n/a";
  * keyboard_indicators  caps/num lock indicators        NULL
  * load_avg             load average                    format string
  *                                                      (%.2f %.2f %.2f)
+ * netspeed_rx          receive network speed           interface name (wlan0)
+ * netspeed_tx          transfer network speed          interface name (wlan0)
  * num_files            number of files in a directory  path
  *                                                      (/home/foo/Inbox/cur)
  * ram_free             free memory in GB               NULL
