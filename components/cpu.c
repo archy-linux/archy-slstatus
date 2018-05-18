@@ -12,7 +12,7 @@
 		int freq;
 
 		return (pscanf("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq",
-		               "%i", &freq) == 1) ?
+		               "%d", &freq) == 1) ?
 		       bprintf("%d", (freq + 500) / 1000) : NULL;
 	}
 

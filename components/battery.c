@@ -16,7 +16,7 @@
 
 		snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/",
 		         bat, "/capacity");
-		return (pscanf(path, "%i", &perc) == 1) ? bprintf("%d", perc) : NULL;
+		return (pscanf(path, "%d", &perc) == 1) ? bprintf("%d", perc) : NULL;
 	}
 
 	const char *
@@ -62,12 +62,12 @@
 		if (!strcmp(state, "Discharging")) {
 			snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/",
 					 bat, "/charge_now");
-			if (pscanf(path, "%i", &charge_now) != 1) {
+			if (pscanf(path, "%d", &charge_now) != 1) {
 				return NULL;
 			}
 			snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/",
 					 bat, "/current_now");
-			if (pscanf(path, "%i", &current_now) != 1) {
+			if (pscanf(path, "%d", &current_now) != 1) {
 				return NULL;
 			}
 
