@@ -9,4 +9,5 @@ void warn(const char *, ...);
 void die(const char *, ...);
 
 const char *bprintf(const char *fmt, ...);
+const char *fmt_scaled(size_t);
 int pscanf(const char *path, const char *fmt, ...);

@@ -65,6 +65,22 @@ bprintf(const char *fmt, ...)
 	return buf;
 }
 
+const char *
+fmt_scaled(size_t bytes)
+{
+	unsigned int i;
+	float scaled;
+	const char *units[] = { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB",
+	                        "ZiB", "YiB" };
+
+	scaled = bytes;
+	for (i = 0; i < LEN(units) && scaled >= 1024; i++) {
+		scaled /= 1024.0;
+	}
+
+	return bprintf("%.1f%s", scaled, units[i]);
+}
+
 int
 pscanf(const char *path, const char *fmt, ...)
 {
