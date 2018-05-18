@@ -1,6 +1,5 @@
 /* See LICENSE file for copyright and license details. */
 #include <errno.h>
-#include <locale.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,6 +55,7 @@ main(int argc, char *argv[])
 	size_t i, len;
 	int sflag, ret;
 	char status[MAXLEN];
+	const char *res;
 
 	sflag = 0;
 	ARGBEGIN {
@@ -70,25 +70,31 @@ main(int argc, char *argv[])
 		usage();
 	}
 
-	setlocale(LC_ALL, "");
-
 	memset(&act, 0, sizeof(act));
 	act.sa_handler = terminate;
 	sigaction(SIGINT,  &act, NULL);
 	sigaction(SIGTERM, &act, NULL);
 
+	if (sflag) {
+		setbuf(stdout, NULL);
+	}
+
 	if (!sflag && !(dpy = XOpenDisplay(NULL))) {
-		fprintf(stderr, "Cannot open display");
+		fprintf(stderr, "XOpenDisplay: Failed to open display\n");
 		return 1;
 	}
 
 	while (!done) {
-		clock_gettime(CLOCK_MONOTONIC, &start);
+		if (clock_gettime(CLOCK_MONOTONIC, &start) < 0) {
+			fprintf(stderr, "clock_gettime: %s\n", strerror(errno));
+			return 1;
+		}
 
 		status[0] = '\0';
 		for (i = len = 0; i < LEN(args); i++) {
-			const char * res = args[i].func(args[i].args);
-			res = (res == NULL) ? unknown_str : res;
+			if (!(res = args[i].func(args[i].args))) {
+				res = unknown_str;
+			}
 			if ((ret = snprintf(status + len, sizeof(status) - len,
 			                    args[i].fmt, res)) < 0) {
 				fprintf(stderr, "snprintf: %s\n",
@@ -103,14 +109,21 @@ main(int argc, char *argv[])
 
 		if (sflag) {
 			printf("%s\n", status);
-			fflush(stdout);
 		} else {
-			XStoreName(dpy, DefaultRootWindow(dpy), status);
-			XSync(dpy, False);
+			if (XStoreName(dpy, DefaultRootWindow(dpy), status) < 0) {
+				fprintf(stderr,
+				        "XStoreName: Allocation failed\n");
+				return 1;
+			}
+			XFlush(dpy);
 		}
 
 		if (!done) {
-			clock_gettime(CLOCK_MONOTONIC, &current);
+			if (clock_gettime(CLOCK_MONOTONIC, &current) < 0) {
+				fprintf(stderr, "clock_gettime: %s\n",
+				        strerror(errno));
+				return 1;
+			}
 			difftimespec(&diff, &current, &start);
 
 			intspec.tv_sec = interval / 1000;
@@ -118,14 +131,23 @@ main(int argc, char *argv[])
 			difftimespec(&wait, &intspec, &diff);
 
 			if (wait.tv_sec >= 0) {
-				nanosleep(&wait, NULL);
+				if (nanosleep(&wait, NULL) < 0 &&
+				    errno != EINTR) {
+					fprintf(stderr, "nanosleep: %s\n",
+					        strerror(errno));
+					return 1;
+				}
 			}
 		}
 	}
 
 	if (!sflag) {
 		XStoreName(dpy, DefaultRootWindow(dpy), NULL);
-		XCloseDisplay(dpy);
+		if (XCloseDisplay(dpy) < 0) {
+			fprintf(stderr,
+			        "XCloseDisplay: Failed to close display\n");
+			return 1;
+		}
 	}
 
 	return 0;
