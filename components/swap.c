@@ -48,7 +48,7 @@
 		}
 		sscanf(match, "SwapFree: %ld kB\n", &free);
 
-		return bprintf("%f", (float)free / 1024 / 1024);
+		return fmt_scaled(free * 1024);
 	}
 
 	const char *
@@ -94,7 +94,7 @@
 		}
 		sscanf(match, "SwapTotal: %ld kB\n", &total);
 
-		return bprintf("%f", (float)total / 1024 / 1024);
+		return fmt_scaled(total * 1024);
 	}
 
 	const char *
@@ -122,7 +122,7 @@
 		}
 		sscanf(match, "SwapFree: %ld kB\n", &free);
 
-		return bprintf("%f", (float)(total - free - cached) / 1024 / 1024);
+		return fmt_scaled((total - free - cached) * 1024);
 	}
 #elif defined(__OpenBSD__)
 	#include <stdlib.h>
@@ -174,7 +174,7 @@
 
 		getstats(&total, &used);
 
-		return bprintf("%f", (float)(total - used) / 1024 / 1024);
+		return fmt_scaled((total - used) * 1024);
 	}
 
 	const char *
@@ -194,7 +194,7 @@
 
 		getstats(&total, &used);
 
-		return bprintf("%f", (float)total / 1024 / 1024);
+		return fmt_scaled(total * 1024);
 	}
 
 	const char *
@@ -204,6 +204,6 @@
 
 		getstats(&total, &used);
 
-		return bprintf("%f", (float)used / 1024 / 1024);
+		return fmt_scaled(used * 1024);
 	}
 #endif
