@@ -3,7 +3,7 @@
 
 #include "../util.h"
 
-const char *
+static const char *
 format(int uptime)
 {
 	int h, m;
