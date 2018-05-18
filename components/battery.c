@@ -45,40 +45,56 @@
 		}
 		return (i == LEN(map)) ? "?" : map[i].symbol;
 	}
+
+	const char *
+	battery_remaining(const char *bat)
+	{
+		/* TODO: Implement */
+		return NULL;
+	}
 #elif defined(__OpenBSD__)
 	#include <fcntl.h>
 	#include <machine/apmvar.h>
 	#include <sys/ioctl.h>
 	#include <unistd.h>
 
-	const char *
-	battery_perc(const char *unused)
+	static int
+	load_apm_power_info(struct apm_power_info *apm_info)
 	{
-		struct apm_power_info apm_info;
 		int fd;
 
 		fd = open("/dev/apm", O_RDONLY);
 		if (fd < 0) {
 			warn("open '/dev/apm':");
-			return NULL;
+			return 0;
 		}
 
-		if (ioctl(fd, APM_IOC_GETPOWER, &apm_info) < 0) {
+		memset(apm_info, 0, sizeof(struct apm_power_info));
+		if (ioctl(fd, APM_IOC_GETPOWER, apm_info) < 0) {
 			warn("ioctl 'APM_IOC_GETPOWER':");
 			close(fd);
-			return NULL;
+			return 0;
 		}
-		close(fd);
+		return close(fd), 1;
+	}
 
-		return bprintf("%d", apm_info.battery_life);
+	const char *
+	battery_perc(const char *unused)
+	{
+		struct apm_power_info apm_info;
+
+		if (load_apm_power_info(&apm_info)) {
+			return bprintf("%d", apm_info.battery_life);
+		}
+
+		return NULL;
 	}
 
 	const char *
 	battery_state(const char *unused)
 	{
-		int fd;
-		size_t i;
 		struct apm_power_info apm_info;
+		size_t i;
 		struct {
 			unsigned int state;
 			char *symbol;
@@ -87,24 +103,28 @@
 			{ APM_AC_OFF,     "-" },
 		};
 
-		fd = open("/dev/apm", O_RDONLY);
-		if (fd < 0) {
-			warn("open '/dev/apm':");
-			return NULL;
-		}
-
-		if (ioctl(fd, APM_IOC_GETPOWER, &apm_info) < 0) {
-			warn("ioctl 'APM_IOC_GETPOWER':");
-			close(fd);
-			return NULL;
-		}
-		close(fd);
-
-		for (i = 0; i < LEN(map); i++) {
-			if (map[i].state == apm_info.ac_state) {
-				break;
+		if (load_apm_power_info(&apm_info)) {
+			for (i = 0; i < LEN(map); i++) {
+				if (map[i].state == apm_info.ac_state) {
+					break;
+				}
 			}
+			return (i == LEN(map)) ? "?" : map[i].symbol;
 		}
-		return (i == LEN(map)) ? "?" : map[i].symbol;
+
+		return NULL;
+	}
+
+	const char *
+	battery_remaining(const char *unused)
+	{
+		struct apm_power_info apm_info;
+
+		if (load_apm_power_info(&apm_info)) {
+			return bprintf("%u:%02u", apm_info.minutes_left / 60,
+				       apm_info.minutes_left % 60);
+		}
+
+		return NULL;
 	}
 #endif
