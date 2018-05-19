@@ -6,14 +6,21 @@
 #include "../util.h"
 
 #if defined(__linux__)
+	#include <inttypes.h>
+	#include <stdint.h>
+
 	const char *
 	cpu_freq(void)
 	{
-		int freq;
+		uint64_t freq;
 
-		return (pscanf("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq",
-		               "%d", &freq) == 1) ?
-		       bprintf("%d", (freq + 500) / 1000) : NULL;
+		/* in kHz */
+		if (pscanf("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq",
+		            "%"SCNu64, &freq) != 1) {
+			return NULL;
+		}
+
+		return fmt_human_10(freq * 1000, "Hz");
 	}
 
 	const char *
@@ -56,12 +63,13 @@
 
 		size = sizeof(freq);
 
+		/* in MHz */
 		if (sysctl(mib, 2, &freq, &size, NULL, 0) < 0) {
 			warn("sysctl 'HW_CPUSPEED':");
 			return NULL;
 		}
 
-		return bprintf("%d", freq);
+		return fmt_human_10((size_t)freq * 1000 * 1000, "Hz");
 	}
 
 	const char *
