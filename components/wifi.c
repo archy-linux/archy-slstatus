@@ -23,8 +23,11 @@
 		char status[5];
 		FILE *fp;
 
-		snprintf(path, sizeof(path), "%s%s%s", "/sys/class/net/", iface,
-		         "/operstate");
+		if (esnprintf(path, sizeof(path),
+		              "/sys/class/net/%s/operstate",
+		              iface) < 0) {
+			return NULL;
+		}
 		if (!(fp = fopen(path, "r"))) {
 			warn("fopen '%s':", path);
 			return NULL;
@@ -69,7 +72,10 @@
 
 		memset(&wreq, 0, sizeof(struct iwreq));
 		wreq.u.essid.length = IW_ESSID_MAX_SIZE+1;
-		snprintf(wreq.ifr_name, sizeof(wreq.ifr_name), "%s", iface);
+		if (esnprintf(wreq.ifr_name, sizeof(wreq.ifr_name),
+		              "%s", iface) < 0) {
+			return NULL;
+		}
 
 		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 			warn("socket 'AF_INET':");

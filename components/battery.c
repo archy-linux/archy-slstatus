@@ -14,9 +14,16 @@
 		int perc;
 		char path[PATH_MAX];
 
-		snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/",
-		         bat, "/capacity");
-		return (pscanf(path, "%d", &perc) == 1) ? bprintf("%d", perc) : NULL;
+		if (esnprintf(path, sizeof(path),
+		              "/sys/class/power_supply/%s/capacity",
+		              bat) < 0) {
+			return NULL;
+		}
+		if (pscanf(path, "%d", &perc) != 1) {
+			return NULL;
+		}
+
+		return bprintf("%d", perc);
 	}
 
 	const char *
@@ -32,8 +39,11 @@
 		size_t i;
 		char path[PATH_MAX], state[12];
 
-		snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/",
-		         bat, "/status");
+		if (esnprintf(path, sizeof(path),
+		              "/sys/class/power_supply/%s/status",
+		              bat) < 0) {
+			return NULL;
+		}
 		if (pscanf(path, "%12s", state) != 1) {
 			return NULL;
 		}
@@ -53,20 +63,29 @@
 		float timeleft;
 		char path[PATH_MAX], state[12];
 
-		snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/",
-		         bat, "/status");
+		if (esnprintf(path, sizeof(path),
+		              "/sys/class/power_supply/%s/status",
+		              bat) < 0) {
+			return NULL;
+		}
 		if (pscanf(path, "%12s", state) != 1) {
 			return NULL;
 		}
 
 		if (!strcmp(state, "Discharging")) {
-			snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/",
-					 bat, "/charge_now");
+			if (esnprintf(path, sizeof(path),
+                                      "/sys/class/power_supply/%s/charge_now",
+			              bat) < 0) {
+				return NULL;
+			}
 			if (pscanf(path, "%d", &charge_now) != 1) {
 				return NULL;
 			}
-			snprintf(path, sizeof(path), "%s%s%s", "/sys/class/power_supply/",
-					 bat, "/current_now");
+			if (esnprintf(path, sizeof(path),
+			              "/sys/class/power_supply/%s/current_now",
+			              bat) < 0) {
+				return NULL;
+			}
 			if (pscanf(path, "%d", &current_now) != 1) {
 				return NULL;
 			}

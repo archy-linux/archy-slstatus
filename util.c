@@ -48,6 +48,27 @@ die(const char *fmt, ...)
 	exit(1);
 }
 
+int
+esnprintf(char *str, size_t size, const char *fmt, ...)
+{
+	va_list ap;
+	int ret;
+
+	va_start(ap, fmt);
+	ret = vsnprintf(str, size, fmt, ap);
+	va_end(ap);
+
+	if (ret < 0) {
+		warn("snprintf:");
+		return -1;
+	} else if ((size_t)ret >= size) {
+		warn("snprintf: Output truncated");
+		return -1;
+	}
+
+	return ret;
+}
+
 const char *
 bprintf(const char *fmt, ...)
 {

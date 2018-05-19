@@ -17,8 +17,11 @@
 
 		oldrxbytes = rxbytes;
 
-		snprintf(path, sizeof(path),
-		         "/sys/class/net/%s/statistics/rx_bytes", interface);
+		if (esnprintf(path, sizeof(path),
+		              "/sys/class/net/%s/statistics/rx_bytes",
+		              interface) < 0) {
+			return NULL;
+		}
 		if (pscanf(path, "%llu", &rxbytes) != 1) {
 			return NULL;
 		}
@@ -37,8 +40,11 @@
 
 		oldtxbytes = txbytes;
 
-		snprintf(path, sizeof(path),
-		         "/sys/class/net/%s/statistics/tx_bytes", interface);
+		if (esnprintf(path, sizeof(path),
+		              "/sys/class/net/%s/statistics/tx_bytes",
+		              interface) < 0) {
+			return NULL;
+		}
 		if (pscanf(path, "%llu", &txbytes) != 1) {
 			return NULL;
 		}

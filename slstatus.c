@@ -91,12 +91,8 @@ main(int argc, char *argv[])
 			if (!(res = args[i].func(args[i].args))) {
 				res = unknown_str;
 			}
-			if ((ret = snprintf(status + len, sizeof(status) - len,
+			if ((ret = esnprintf(status + len, sizeof(status) - len,
 			                    args[i].fmt, res)) < 0) {
-				warn("snprintf:");
-				break;
-			} else if ((size_t)ret >= sizeof(status) - len) {
-				warn("snprintf: Output truncated");
 				break;
 			}
 			len += ret;

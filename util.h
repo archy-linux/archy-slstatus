@@ -8,6 +8,7 @@ extern char *argv0;
 void warn(const char *, ...);
 void die(const char *, ...);
 
+int esnprintf(char *str, size_t size, const char *fmt, ...);
 const char *bprintf(const char *fmt, ...);
 const char *fmt_scaled(size_t);
 int pscanf(const char *path, const char *fmt, ...);
