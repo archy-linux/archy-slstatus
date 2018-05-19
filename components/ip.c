@@ -11,8 +11,8 @@
 
 #include "../util.h"
 
-const char *
-ipv4(const char *iface)
+static const char *
+ip(const char *iface, unsigned short sa_family)
 {
 	struct ifaddrs *ifaddr, *ifa;
 	int s;
@@ -27,10 +27,10 @@ ipv4(const char *iface)
 		if (!ifa->ifa_addr) {
 			continue;
 		}
-		s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in), host,
-		                NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
+		s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in6),
+		                host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
 		if (!strcmp(ifa->ifa_name, iface) &&
-		    (ifa->ifa_addr->sa_family == AF_INET)) {
+		    (ifa->ifa_addr->sa_family == sa_family)) {
 			if (s != 0) {
 				warn("getnameinfo: %s", gai_strerror(s));
 				return NULL;
@@ -45,34 +45,13 @@ ipv4(const char *iface)
 }
 
 const char *
+ipv4(const char *iface)
+{
+	return ip(iface, AF_INET);
+}
+
+const char *
 ipv6(const char *iface)
 {
-	struct ifaddrs *ifaddr, *ifa;
-	int s;
-	char host[NI_MAXHOST];
-
-	if (getifaddrs(&ifaddr) < 0) {
-		warn("getifaddrs:");
-		return NULL;
-	}
-
-	for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
-		if (!ifa->ifa_addr) {
-			continue;
-		}
-		s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in6), host,
-		                NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
-		if (!strcmp(ifa->ifa_name, iface) &&
-		    (ifa->ifa_addr->sa_family == AF_INET6)) {
-			if (s != 0) {
-				warn("getnameinfo: %s", gai_strerror(s));
-				return NULL;
-			}
-			return bprintf("%s", host);
-		}
-	}
-
-	freeifaddrs(ifaddr);
-
-	return NULL;
+	return ip(iface, AF_INET6);
 }
