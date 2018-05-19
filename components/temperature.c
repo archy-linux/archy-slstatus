@@ -9,8 +9,11 @@
 	{
 		int temp;
 
-		return (pscanf(file, "%d", &temp) == 1) ?
-		       bprintf("%d°C", temp / 1000) : NULL;
+		if(pscanf(file, "%d", &temp) != 1) {
+			return NULL;
+		}
+
+		return bprintf("%d°C", temp / 1000);
 	}
 #elif defined(__OpenBSD__)
 	#include <errno.h>
