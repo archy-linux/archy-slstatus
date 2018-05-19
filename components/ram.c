@@ -9,12 +9,15 @@
 	{
 		long free;
 
-		return (pscanf("/proc/meminfo",
-		               "MemTotal: %ld kB\n"
-		               "MemFree: %ld kB\n"
-		               "MemAvailable: %ld kB\n",
-		               &free, &free, &free) == 3) ?
-		       fmt_human_2(free * 1024, "B") : NULL;
+		if (pscanf("/proc/meminfo",
+		           "MemTotal: %ld kB\n"
+		           "MemFree: %ld kB\n"
+		           "MemAvailable: %ld kB\n",
+		           &free, &free, &free) != 3) {
+			return NULL;
+		}
+
+		return fmt_human_2(free * 1024, "B");
 	}
 
 	const char *
@@ -22,15 +25,17 @@
 	{
 		long total, free, buffers, cached;
 
-		return (pscanf("/proc/meminfo",
-		               "MemTotal: %ld kB\n"
-		               "MemFree: %ld kB\n"
-		               "MemAvailable: %ld kB\nBuffers: %ld kB\n"
-		               "Cached: %ld kB\n",
-		               &total, &free, &buffers, &buffers, &cached) == 5) ?
-		       bprintf("%d%%", 100 * ((total - free) - (buffers + cached)) /
-		               total) :
-		       NULL;
+		if (pscanf("/proc/meminfo",
+		           "MemTotal: %ld kB\n"
+		           "MemFree: %ld kB\n"
+		           "MemAvailable: %ld kB\nBuffers: %ld kB\n"
+		           "Cached: %ld kB\n",
+		           &total, &free, &buffers, &buffers, &cached) != 5) {
+			return NULL;
+		}
+
+		return bprintf("%d%%", 100 * ((total - free) -
+		                              (buffers + cached)) / total);
 	}
 
 	const char *
@@ -38,8 +43,12 @@
 	{
 		long total;
 
-		return (pscanf("/proc/meminfo", "MemTotal: %ld kB\n", &total) == 1) ?
-		       fmt_human_2(total * 1024, "B") : NULL;
+		if (pscanf("/proc/meminfo", "MemTotal: %ld kB\n",
+		           &total) != 1) {
+			return NULL;
+		}
+
+		return fmt_human_2(total * 1024, "B");
 	}
 
 	const char *
@@ -47,13 +56,17 @@
 	{
 		long total, free, buffers, cached;
 
-		return (pscanf("/proc/meminfo",
-		               "MemTotal: %ld kB\n"
-		               "MemFree: %ld kB\n"
-		               "MemAvailable: %ld kB\nBuffers: %ld kB\n"
-		               "Cached: %ld kB\n",
-		               &total, &free, &buffers, &buffers, &cached) == 5) ?
-		       fmt_human_2((total - free - buffers - cached) * 1024, "B") : NULL;
+		if (pscanf("/proc/meminfo",
+		           "MemTotal: %ld kB\n"
+		           "MemFree: %ld kB\n"
+		           "MemAvailable: %ld kB\nBuffers: %ld kB\n"
+		           "Cached: %ld kB\n",
+		           &total, &free, &buffers, &buffers, &cached) != 5) {
+			return NULL;
+		}
+
+		return fmt_human_2((total - free - buffers - cached) * 1024,
+		                   "B");
 	}
 #elif defined(__OpenBSD__)
 	#include <stdlib.h>
