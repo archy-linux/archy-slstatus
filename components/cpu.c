@@ -26,7 +26,6 @@
 	const char *
 	cpu_perc(void)
 	{
-		static int valid;
 		static long double a[7];
 		long double b[7];
 
@@ -36,8 +35,7 @@
 		           &a[0], &a[1], &a[2], &a[3], &a[4], &a[5], &a[6]) != 7) {
 			return NULL;
 		}
-		if (!valid) {
-			valid = 1;
+		if (b[0] == 0) {
 			return NULL;
 		}
 
@@ -76,7 +74,6 @@
 	cpu_perc(void)
 	{
 		int mib[2];
-		static int valid;
 		static long int a[CPUSTATES];
 		long int b[CPUSTATES];
 		size_t size;
@@ -91,8 +88,7 @@
 			warn("sysctl 'KERN_CPTIME':");
 			return NULL;
 		}
-		if (!valid) {
-			valid = 1;
+		if (b[0] == 0) {
 			return NULL;
 		}
 
