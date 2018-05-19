@@ -26,8 +26,8 @@
 			return NULL;
 		}
 
-		return oldrxbytes ? fmt_scaled((rxbytes - oldrxbytes) /
-		                               interval * 1000) : NULL;
+		return oldrxbytes ? fmt_scaled((rxbytes - oldrxbytes) *
+		                               1000 / interval) : NULL;
 	}
 
 	const char *
@@ -49,8 +49,8 @@
 			return NULL;
 		}
 
-		return oldtxbytes ? fmt_scaled((txbytes - oldtxbytes) /
-		                               interval * 1000) : NULL;
+		return oldtxbytes ? fmt_scaled((txbytes - oldtxbytes) *
+		                               1000 / interval) : NULL;
 	}
 #elif defined(__OpenBSD__)
 	#include <string.h>
@@ -88,8 +88,8 @@
 			return NULL;
 		}
 
-		return oldrxbytes ? fmt_scaled((rxbytes - oldrxbytes) /
-		                               interval * 1000) : NULL;
+		return oldrxbytes ? fmt_scaled((rxbytes - oldrxbytes) *
+		                               1000 / interval) : NULL;
 	}
 
 	const char *
@@ -121,7 +121,7 @@
 			return NULL;
 		}
 
-		return oldtxbytes ? fmt_scaled((txbytes - oldtxbytes) /
-		                               interval * 1000) : NULL;
+		return oldtxbytes ? fmt_scaled((txbytes - oldtxbytes) *
+		                               1000 / interval) : NULL;
 	}
 #endif
