@@ -16,7 +16,10 @@ run_command(const char *cmd)
 		return NULL;
 	}
 	p = fgets(buf, sizeof(buf) - 1, fp);
-	pclose(fp);
+	if (pclose(fp) < 0) {
+		warn("pclose '%s':", cmd);
+		return NULL;
+	}
 	if (!p) {
 		return NULL;
 	}
