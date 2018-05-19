@@ -9,9 +9,12 @@
 	{
 		int num;
 
-		return (pscanf("/proc/sys/kernel/random/entropy_avail",
-		               "%d", &num) == 1) ?
-		       bprintf("%d", num) : NULL;
+		if (pscanf("/proc/sys/kernel/random/entropy_avail",
+		           "%d", &num) != 1) {
+			return NULL;
+		}
+
+		return bprintf("%d", num);
 	}
 #elif defined(__OpenBSD__)
 	const char *
