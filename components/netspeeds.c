@@ -25,9 +25,12 @@
 		if (pscanf(path, "%llu", &rxbytes) != 1) {
 			return NULL;
 		}
+		if (oldrxbytes == 0) {
+			return NULL;
+		}
 
-		return oldrxbytes ? fmt_scaled((rxbytes - oldrxbytes) *
-		                               1000 / interval) : NULL;
+		return fmt_human_2((rxbytes - oldrxbytes) *
+		                   1000 / interval, "B/s");
 	}
 
 	const char *
@@ -48,9 +51,12 @@
 		if (pscanf(path, "%llu", &txbytes) != 1) {
 			return NULL;
 		}
+		if (oldtxbytes == 0) {
+			return NULL;
+		}
 
-		return oldtxbytes ? fmt_scaled((txbytes - oldtxbytes) *
-		                               1000 / interval) : NULL;
+		return fmt_human_2((txbytes - oldtxbytes) *
+		                   1000 / interval, "B/s");
 	}
 #elif defined(__OpenBSD__)
 	#include <string.h>
@@ -87,9 +93,12 @@
 			warn("reading 'if_data' failed");
 			return NULL;
 		}
+		if (oldrxbytes == 0) {
+			return NULL;
+		}
 
-		return oldrxbytes ? fmt_scaled((rxbytes - oldrxbytes) *
-		                               1000 / interval) : NULL;
+		return fmt_human_2((rxbytes - oldrxbytes) *
+		                   1000 / interval, "B/s");
 	}
 
 	const char *
@@ -120,8 +129,11 @@
 			warn("reading 'if_data' failed");
 			return NULL;
 		}
+		if (oldtxbytes == 0) {
+			return NULL;
+		}
 
-		return oldtxbytes ? fmt_scaled((txbytes - oldtxbytes) *
-		                               1000 / interval) : NULL;
+		return fmt_human_2((txbytes - oldtxbytes) *
+		                   1000 / interval, "B/s");
 	}
 #endif

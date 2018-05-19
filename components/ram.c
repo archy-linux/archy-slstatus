@@ -14,7 +14,7 @@
 		               "MemFree: %ld kB\n"
 		               "MemAvailable: %ld kB\n",
 		               &free, &free, &free) == 3) ?
-		       fmt_scaled(free * 1024) : NULL;
+		       fmt_human_2(free * 1024, "B") : NULL;
 	}
 
 	const char *
@@ -39,7 +39,7 @@
 		long total;
 
 		return (pscanf("/proc/meminfo", "MemTotal: %ld kB\n", &total) == 1) ?
-		       fmt_scaled(total * 1024) : NULL;
+		       fmt_human_2(total * 1024, "B") : NULL;
 	}
 
 	const char *
@@ -53,7 +53,7 @@
 		               "MemAvailable: %ld kB\nBuffers: %ld kB\n"
 		               "Cached: %ld kB\n",
 		               &total, &free, &buffers, &buffers, &cached) == 5) ?
-		       fmt_scaled((total - free - buffers - cached) * 1024) : NULL;
+		       fmt_human_2((total - free - buffers - cached) * 1024, "B") : NULL;
 	}
 #elif defined(__OpenBSD__)
 	#include <stdlib.h>
@@ -83,7 +83,7 @@
 
 		if (load_uvmexp(&uvmexp)) {
 			free_pages = uvmexp.npages - uvmexp.active;
-			return fmt_scaled(pagetok(free_pages, uvmexp.pageshift) * 1024);
+			return fmt_human_2(pagetok(free_pages, uvmexp.pageshift) * 1024, "B");
 		}
 
 		return NULL;
@@ -109,7 +109,7 @@
 		struct uvmexp uvmexp;
 
 		if (load_uvmexp(&uvmexp)) {
-			return fmt_scaled(pagetok(uvmexp.npages, uvmexp.pageshift) * 1024);
+			return fmt_human_2(pagetok(uvmexp.npages, uvmexp.pageshift) * 1024, "B");
 		}
 
 		return NULL;
@@ -121,7 +121,7 @@
 		struct uvmexp uvmexp;
 
 		if (load_uvmexp(&uvmexp)) {
-			return fmt_scaled(pagetok(uvmexp.active, uvmexp.pageshift) * 1024);
+			return fmt_human_2(pagetok(uvmexp.active, uvmexp.pageshift) * 1024, "B");
 		}
 
 		return NULL;

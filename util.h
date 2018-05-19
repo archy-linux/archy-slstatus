@@ -10,5 +10,6 @@ void die(const char *, ...);
 
 int esnprintf(char *str, size_t size, const char *fmt, ...);
 const char *bprintf(const char *fmt, ...);
-const char *fmt_scaled(size_t);
+const char *fmt_human_2(size_t num, char *unit);
+const char *fmt_human_10(size_t num, char *unit);
 int pscanf(const char *path, const char *fmt, ...);

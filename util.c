@@ -87,19 +87,35 @@ bprintf(const char *fmt, ...)
 }
 
 const char *
-fmt_scaled(size_t bytes)
+fmt_human_2(size_t num, char *unit)
 {
-	unsigned int i;
-	float scaled;
-	const char *units[] = { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB",
-	                        "ZiB", "YiB" };
+	size_t i;
+	double scaled;
+	const char *prefix[] = { "", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei",
+	                         "Zi", "Yi" };
 
-	scaled = bytes;
-	for (i = 0; i < LEN(units) && scaled >= 1024; i++) {
+	scaled = num;
+	for (i = 0; i < LEN(prefix) && scaled >= 1024; i++) {
 		scaled /= 1024.0;
 	}
 
-	return bprintf("%.1f%s", scaled, units[i]);
+	return bprintf("%.1f%s%s", scaled, prefix[i], unit);
+}
+
+const char *
+fmt_human_10(size_t num, char *unit)
+{
+	size_t i;
+	double scaled;
+	const char *prefix[] = { "", "K", "M", "G", "T", "P", "E",
+	                         "Z", "Y" };
+
+	scaled = num;
+	for (i = 0; i < LEN(prefix) && scaled >= 1000; i++) {
+		scaled /= 1000.0;
+	}
+
+	return bprintf("%.1f%s%s", scaled, prefix[i], unit);
 }
 
 int
