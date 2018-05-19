@@ -63,11 +63,13 @@
 		extern const unsigned int interval;
 		char if_ok = 0;
 
+		oldrxbytes = rxbytes;
+
 		if (getifaddrs(&ifal) == -1) {
 			warn("getifaddrs failed");
 			return NULL;
 		}
-		oldrxbytes = rxbytes;
+		rxbytes = 0;
 		for (ifa = ifal; ifa; ifa = ifa->ifa_next) {
 			if (!strcmp(ifa->ifa_name, interface) &&
 			   (ifd = (struct if_data *)ifa->ifa_data)) {
@@ -94,11 +96,13 @@
 		extern const unsigned int interval;
 		char if_ok = 0;
 
+		oldtxbytes = txbytes;
+
 		if (getifaddrs(&ifal) == -1) {
 			warn("getifaddrs failed");
 			return NULL;
 		}
-		oldtxbytes = txbytes;
+		txbytes = 0;
 		for (ifa = ifal; ifa; ifa = ifa->ifa_next) {
 			if (!strcmp(ifa->ifa_name, interface) &&
 			   (ifd = (struct if_data *)ifa->ifa_data)) {
