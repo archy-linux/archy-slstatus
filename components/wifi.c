@@ -60,7 +60,7 @@
 		sscanf(datastart + 1, " %*d   %d  %*d  %*d\t\t  %*d\t   "
 		       "%*d\t\t%*d\t\t %*d\t  %*d\t\t %*d", &cur);
 
-		return bprintf("%d", (int)((float)cur / total * 100));
+		return bprintf("%d%%", (int)((float)cur / total * 100));
 	}
 
 	const char *
@@ -147,7 +147,7 @@
 				q = nr.nr_rssi >= -50 ? 100 : (nr.nr_rssi <= -100 ? 0 :
 				(2 * (nr.nr_rssi + 100)));
 			}
-			return bprintf("%d", q);
+			return bprintf("%d%%", q);
 		}
 
 		return NULL;

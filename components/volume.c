@@ -42,5 +42,5 @@ vol_perc(const char *card)
 
 	close(afd);
 
-	return bprintf("%d", v & 0xff);
+	return bprintf("%d%%", v & 0xff);
 }

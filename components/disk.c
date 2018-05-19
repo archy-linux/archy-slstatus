@@ -29,7 +29,7 @@ disk_perc(const char *mnt)
 		return NULL;
 	}
 
-	return bprintf("%d", (int)(100 *
+	return bprintf("%d%%", (int)(100 *
 	               (1.0f - ((float)fs.f_bavail / (float)fs.f_blocks))));
 }
 

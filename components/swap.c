@@ -76,7 +76,7 @@
 		}
 		sscanf(match, "SwapFree: %ld kB\n", &free);
 
-		return bprintf("%d", 100 * (total - free - cached) / total);
+		return bprintf("%d%%", 100 * (total - free - cached) / total);
 	}
 
 	const char *
@@ -184,7 +184,7 @@
 
 		getstats(&total, &used);
 
-		return bprintf("%d", 100 * used / total);
+		return bprintf("%d%%", 100 * used / total);
 	}
 
 	const char *
