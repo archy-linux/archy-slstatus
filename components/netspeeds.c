@@ -11,7 +11,7 @@
 	netspeed_rx(const char *interface)
 	{
 		uint64_t oldrxbytes;
-		static uint64_t rxbytes = 0;
+		static uint64_t rxbytes;
 		extern const unsigned int interval;
 		char path[PATH_MAX];
 
@@ -37,7 +37,7 @@
 	netspeed_tx(const char *interface)
 	{
 		uint64_t oldtxbytes;
-		static uint64_t txbytes = 0;
+		static uint64_t txbytes;
 		extern const unsigned int interval;
 		char path[PATH_MAX];
 
@@ -71,7 +71,7 @@
 		struct ifaddrs *ifal, *ifa;
 		struct if_data *ifd;
 		uint64_t oldrxbytes;
-		static uint64_t rxbytes = 0;
+		static uint64_t rxbytes;
 		extern const unsigned int interval;
 		int if_ok = 0;
 
@@ -107,7 +107,7 @@
 		struct ifaddrs *ifal, *ifa;
 		struct if_data *ifd;
 		uint64_t oldtxbytes;
-		static uint64_t txbytes = 0;
+		static uint64_t txbytes;
 		extern const unsigned int interval;
 		int if_ok = 0;
 
