@@ -61,7 +61,7 @@
 		uint64_t oldrxbytes;
 		static uint64_t rxbytes = 0;
 		extern const unsigned int interval;
-		char if_ok = 0;
+		int if_ok = 0;
 
 		oldrxbytes = rxbytes;
 
@@ -94,7 +94,7 @@
 		uint64_t oldtxbytes;
 		static uint64_t txbytes = 0;
 		extern const unsigned int interval;
-		char if_ok = 0;
+		int if_ok = 0;
 
 		oldtxbytes = txbytes;
 
