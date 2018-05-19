@@ -5,48 +5,46 @@
 #include "../util.h"
 
 #if defined(__linux__)
+	#include <stdint.h>
+
 	const char *
 	netspeed_rx(const char *interface)
 	{
-		static int valid;
-		static unsigned long long rxbytes;
-		unsigned long oldrxbytes;
+		uint64_t oldrxbytes;
+		static uint64_t rxbytes = 0;
 		extern const unsigned int interval;
 		char path[PATH_MAX];
 
 		oldrxbytes = rxbytes;
-		snprintf(path, sizeof(path), "/sys/class/net/%s/statistics/rx_bytes", interface);
+
+		snprintf(path, sizeof(path),
+		         "/sys/class/net/%s/statistics/rx_bytes", interface);
 		if (pscanf(path, "%llu", &rxbytes) != 1) {
 			return NULL;
 		}
-		if (!valid) {
-			valid = 1;
-			return NULL;
-		}
 
-		return fmt_scaled((rxbytes - oldrxbytes) / interval * 1000);
+		return oldrxbytes ? fmt_scaled((rxbytes - oldrxbytes) /
+		                               interval * 1000) : NULL;
 	}
 
 	const char *
 	netspeed_tx(const char *interface)
 	{
-		static int valid;
-		static unsigned long long txbytes;
-		unsigned long oldtxbytes;
+		uint64_t oldtxbytes;
+		static uint64_t txbytes = 0;
 		extern const unsigned int interval;
 		char path[PATH_MAX];
 
 		oldtxbytes = txbytes;
-		snprintf(path, sizeof(path), "/sys/class/net/%s/statistics/tx_bytes", interface);
+
+		snprintf(path, sizeof(path),
+		         "/sys/class/net/%s/statistics/tx_bytes", interface);
 		if (pscanf(path, "%llu", &txbytes) != 1) {
 			return NULL;
 		}
-		if (!valid) {
-			valid = 1;
-			return NULL;
-		}
 
-		return fmt_scaled((txbytes - oldtxbytes) / interval * 1000);
+		return oldtxbytes ? fmt_scaled((txbytes - oldtxbytes) /
+		                               interval * 1000) : NULL;
 	}
 #elif defined(__OpenBSD__)
 	#include <string.h>
@@ -60,9 +58,8 @@
 	{
 		struct ifaddrs *ifal, *ifa;
 		struct if_data *ifd;
-		static uint64_t oldrxbytes;
-		uint64_t rxbytes = 0;
-		const char *rxs;
+		uint64_t oldrxbytes;
+		static uint64_t rxbytes = 0;
 		extern const unsigned int interval;
 		char if_ok = 0;
 
@@ -82,9 +79,8 @@
 			return NULL;
 		}
 
-		rxs = oldrxbytes ? fmt_scaled((rxbytes - oldrxbytes) /
-		                              interval * 1000) : NULL;
-		return (oldrxbytes = rxbytes, rxs);
+		return oldrxbytes ? fmt_scaled((rxbytes - oldrxbytes) /
+		                               interval * 1000) : NULL;
 	}
 
 	const char *
@@ -92,9 +88,8 @@
 	{
 		struct ifaddrs *ifal, *ifa;
 		struct if_data *ifd;
-		static uint64_t oldtxbytes;
-		uint64_t txbytes = 0;
-		const char *txs;
+		uint64_t oldtxbytes;
+		static uint64_t txbytes = 0;
 		extern const unsigned int interval;
 		char if_ok = 0;
 
@@ -114,8 +109,7 @@
 			return NULL;
 		}
 
-		txs = oldtxbytes ? fmt_scaled((txbytes - oldtxbytes) /
-		                              interval * 1000) : NULL;
-		return (oldtxbytes = txbytes, txs);
+		return oldtxbytes ? fmt_scaled((txbytes - oldtxbytes) /
+		                               interval * 1000) : NULL;
 	}
 #endif
