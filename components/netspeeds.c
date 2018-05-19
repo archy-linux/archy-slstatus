@@ -67,6 +67,7 @@
 			warn("getifaddrs failed");
 			return NULL;
 		}
+		oldrxbytes = rxbytes;
 		for (ifa = ifal; ifa; ifa = ifa->ifa_next) {
 			if (!strcmp(ifa->ifa_name, interface) &&
 			   (ifd = (struct if_data *)ifa->ifa_data)) {
@@ -97,6 +98,7 @@
 			warn("getifaddrs failed");
 			return NULL;
 		}
+		oldtxbytes = txbytes;
 		for (ifa = ifal; ifa; ifa = ifa->ifa_next) {
 			if (!strcmp(ifa->ifa_name, interface) &&
 			   (ifd = (struct if_data *)ifa->ifa_data)) {
