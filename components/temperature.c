@@ -10,7 +10,7 @@
 		int temp;
 
 		return (pscanf(file, "%d", &temp) == 1) ?
-		       bprintf("%d", temp / 1000) : NULL;
+		       bprintf("%d°C", temp / 1000) : NULL;
 	}
 #elif defined(__OpenBSD__)
 	#include <errno.h>
@@ -41,6 +41,6 @@
 		}
 
 		/* kelvin to celsius */
-		return bprintf("%d", (temp.value - 273150000) / 1000000);
+		return bprintf("%d°C", (temp.value - 273150000) / 1000000);
 	}
 #endif
