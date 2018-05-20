@@ -83,7 +83,7 @@
 	battery_remaining(const char *bat)
 	{
 		int charge_now, current_now, m, h;
-		float timeleft;
+		double timeleft;
 		char path[PATH_MAX], state[12];
 
 		if (esnprintf(path, sizeof(path),
@@ -107,9 +107,9 @@
 				return NULL;
 			}
 
-			timeleft = (float)charge_now / (float)current_now;
+			timeleft = (double)charge_now / (double)current_now;
 			h = timeleft;
-			m = (timeleft - (float)h) * 60;
+			m = (timeleft - (double)h) * 60;
 
 			return bprintf("%dh %dm", h, m);
 		}
