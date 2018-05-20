@@ -9,19 +9,22 @@
 	#include <limits.h>
 	#include <unistd.h>
 
-	#define CHARGE_NOW    "/sys/class/power_supply/%s/charge_now"
-	#define ENERGY_NOW    "/sys/class/power_supply/%s/energy_now"
-	#define CURRENT_NOW   "/sys/class/power_supply/%s/current_now"
-	#define POWER_NOW     "/sys/class/power_supply/%s/power_now"
+	#define CHARGE_NOW "/sys/class/power_supply/%s/charge_now"
+	#define ENERGY_NOW "/sys/class/power_supply/%s/energy_now"
+	#define CURRENT_NOW "/sys/class/power_supply/%s/current_now"
+	#define POWER_NOW "/sys/class/power_supply/%s/power_now"
 
 	static const char *
-	pick(const char *bat, const char *f1, const char *f2, char *path, size_t length)
+	pick(const char *bat, const char *f1, const char *f2, char *path,
+	     size_t length)
 	{
-		if (esnprintf(path, length, f1, bat) > 0 && access(path, R_OK) == 0) {
+		if (esnprintf(path, length, f1, bat) > 0 &&
+		    access(path, R_OK) == 0) {
 			return f1;
 		}
 
-		if (esnprintf(path, length, f2, bat) > 0 && access(path, R_OK) == 0) {
+		if (esnprintf(path, length, f2, bat) > 0 &&
+		    access(path, R_OK) == 0) {
 			return f2;
 		}
 
@@ -92,13 +95,14 @@
 			return NULL;
 		}
 
-		if (pick(bat, CHARGE_NOW, ENERGY_NOW, path, sizeof (path)) == NULL ||
+		if (!pick(bat, CHARGE_NOW, ENERGY_NOW, path, sizeof(path)) ||
 		    pscanf(path, "%d", &charge_now) < 0) {
 			return NULL;
 		}
 
 		if (!strcmp(state, "Discharging")) {
-			if (pick(bat, CURRENT_NOW, POWER_NOW, path, sizeof (path)) == NULL ||
+			if (!pick(bat, CURRENT_NOW, POWER_NOW, path,
+			          sizeof(path)) ||
 			    pscanf(path, "%d", &current_now) < 0) {
 				return NULL;
 			}
@@ -182,7 +186,8 @@
 
 		if (load_apm_power_info(&apm_info)) {
 			if (apm_info.ac_state != APM_AC_ON) {
-				return bprintf("%uh %02um", apm_info.minutes_left / 60,
+				return bprintf("%uh %02um",
+			                       apm_info.minutes_left / 60,
 				               apm_info.minutes_left % 60);
 			} else {
 				return "";
