@@ -31,6 +31,7 @@ ip(const char *iface, unsigned short sa_family)
 		                host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
 		if (!strcmp(ifa->ifa_name, iface) &&
 		    (ifa->ifa_addr->sa_family == sa_family)) {
+			freeifaddrs(ifaddr);
 			if (s != 0) {
 				warn("getnameinfo: %s", gai_strerror(s));
 				return NULL;
