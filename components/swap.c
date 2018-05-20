@@ -188,6 +188,10 @@
 
 		getstats(&total, &used);
 
+		if (total == 0) {
+			return NULL;
+		}
+
 		return bprintf("%d%%", 100 * used / total);
 	}
 
