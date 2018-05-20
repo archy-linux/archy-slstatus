@@ -17,7 +17,7 @@
 			return NULL;
 		}
 
-		return fmt_human_2(free * 1024, "B");
+		return fmt_human_2(free * 1024);
 	}
 
 	const char *
@@ -34,8 +34,8 @@
 			return NULL;
 		}
 
-		return bprintf("%d%%", 100 * ((total - free) -
-		                              (buffers + cached)) / total);
+		return bprintf("%d", 100 * ((total - free) -
+		                            (buffers + cached)) / total);
 	}
 
 	const char *
@@ -48,7 +48,7 @@
 			return NULL;
 		}
 
-		return fmt_human_2(total * 1024, "B");
+		return fmt_human_2(total * 1024);
 	}
 
 	const char *
@@ -65,8 +65,7 @@
 			return NULL;
 		}
 
-		return fmt_human_2((total - free - buffers - cached) * 1024,
-		                   "B");
+		return fmt_human_2((total - free - buffers - cached) * 1024);
 	}
 #elif defined(__OpenBSD__)
 	#include <stdlib.h>
@@ -96,7 +95,8 @@
 
 		if (load_uvmexp(&uvmexp)) {
 			free_pages = uvmexp.npages - uvmexp.active;
-			return fmt_human_2(pagetok(free_pages, uvmexp.pageshift) * 1024, "B");
+			return fmt_human_2(pagetok(free_pages,
+			                           uvmexp.pageshift) * 1024);
 		}
 
 		return NULL;
@@ -110,7 +110,7 @@
 
 		if (load_uvmexp(&uvmexp)) {
 			percent = uvmexp.active * 100 / uvmexp.npages;
-			return bprintf("%d%%", percent);
+			return bprintf("%d", percent);
 		}
 
 		return NULL;
@@ -122,7 +122,8 @@
 		struct uvmexp uvmexp;
 
 		if (load_uvmexp(&uvmexp)) {
-			return fmt_human_2(pagetok(uvmexp.npages, uvmexp.pageshift) * 1024, "B");
+			return fmt_human_2(pagetok(uvmexp.npages,
+			                           uvmexp.pageshift) * 1024);
 		}
 
 		return NULL;
@@ -134,7 +135,8 @@
 		struct uvmexp uvmexp;
 
 		if (load_uvmexp(&uvmexp)) {
-			return fmt_human_2(pagetok(uvmexp.active, uvmexp.pageshift) * 1024, "B");
+			return fmt_human_2(pagetok(uvmexp.active,
+			                           uvmexp.pageshift) * 1024);
 		}
 
 		return NULL;

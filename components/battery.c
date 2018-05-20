@@ -43,7 +43,7 @@
 			return NULL;
 		}
 
-		return bprintf("%d%%", perc);
+		return bprintf("%d", perc);
 	}
 
 	const char *
@@ -144,7 +144,7 @@
 		struct apm_power_info apm_info;
 
 		if (load_apm_power_info(&apm_info)) {
-			return bprintf("%d%%", apm_info.battery_life);
+			return bprintf("%d", apm_info.battery_life);
 		}
 
 		return NULL;

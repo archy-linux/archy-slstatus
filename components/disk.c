@@ -16,7 +16,7 @@ disk_free(const char *mnt)
 		return NULL;
 	}
 
-	return fmt_human_2(fs.f_frsize * fs.f_bavail, "B");
+	return fmt_human_2(fs.f_frsize * fs.f_bavail);
 }
 
 const char *
@@ -29,7 +29,7 @@ disk_perc(const char *mnt)
 		return NULL;
 	}
 
-	return bprintf("%d%%", (int)(100 *
+	return bprintf("%d", (int)(100 *
 	               (1.0f - ((float)fs.f_bavail / (float)fs.f_blocks))));
 }
 
@@ -43,7 +43,7 @@ disk_total(const char *mnt)
 		return NULL;
 	}
 
-	return fmt_human_2(fs.f_frsize * fs.f_blocks, "B");
+	return fmt_human_2(fs.f_frsize * fs.f_blocks);
 }
 
 const char *
@@ -56,5 +56,5 @@ disk_used(const char *mnt)
 		return NULL;
 	}
 
-	return fmt_human_2(fs.f_frsize * (fs.f_blocks - fs.f_bfree), "B");
+	return fmt_human_2(fs.f_frsize * (fs.f_blocks - fs.f_bfree));
 }

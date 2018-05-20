@@ -13,7 +13,7 @@
 			return NULL;
 		}
 
-		return bprintf("%d°C", temp / 1000);
+		return bprintf("%d", temp / 1000);
 	}
 #elif defined(__OpenBSD__)
 	#include <errno.h>
@@ -44,6 +44,6 @@
 		}
 
 		/* kelvin to celsius */
-		return bprintf("%d°C", (temp.value - 273150000) / 1000000);
+		return bprintf("%d", (temp.value - 273150000) / 1000000);
 	}
 #endif

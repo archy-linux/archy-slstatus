@@ -20,7 +20,7 @@
 			return NULL;
 		}
 
-		return fmt_human_10(freq * 1000, "Hz");
+		return fmt_human_10(freq * 1000);
 	}
 
 	const char *
@@ -39,7 +39,7 @@
 			return NULL;
 		}
 
-		return bprintf("%d%%", (int)(100 *
+		return bprintf("%d", (int)(100 *
 		               ((b[0] + b[1] + b[2] + b[5] + b[6]) -
 		                (a[0] + a[1] + a[2] + a[5] + a[6])) /
 		               ((b[0] + b[1] + b[2] + b[3] + b[4] + b[5] + b[6]) -
@@ -67,7 +67,7 @@
 			return NULL;
 		}
 
-		return fmt_human_10((size_t)freq * 1000 * 1000, "Hz");
+		return fmt_human_10((size_t)freq * 1000 * 1000);
 	}
 
 	const char *
@@ -92,7 +92,7 @@
 			return NULL;
 		}
 
-		return bprintf("%d%%", 100 *
+		return bprintf("%d", 100 *
 		               ((a[CP_USER] + a[CP_NICE] + a[CP_SYS] + a[CP_INTR]) -
 		                (b[CP_USER] + b[CP_NICE] + b[CP_SYS] + b[CP_INTR])) /
 		               ((a[CP_USER] + a[CP_NICE] + a[CP_SYS] + a[CP_INTR] +

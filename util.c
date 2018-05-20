@@ -87,7 +87,7 @@ bprintf(const char *fmt, ...)
 }
 
 const char *
-fmt_human_2(size_t num, char *unit)
+fmt_human_2(size_t num)
 {
 	size_t i;
 	double scaled;
@@ -99,11 +99,11 @@ fmt_human_2(size_t num, char *unit)
 		scaled /= 1024.0;
 	}
 
-	return bprintf("%.1f%s%s", scaled, prefix[i], unit);
+	return bprintf("%.1f%s", scaled, prefix[i]);
 }
 
 const char *
-fmt_human_10(size_t num, char *unit)
+fmt_human_10(size_t num)
 {
 	size_t i;
 	double scaled;
@@ -115,7 +115,7 @@ fmt_human_10(size_t num, char *unit)
 		scaled /= 1000.0;
 	}
 
-	return bprintf("%.1f%s%s", scaled, prefix[i], unit);
+	return bprintf("%.1f%s", scaled, prefix[i]);
 }
 
 int
