@@ -84,7 +84,11 @@
 
 		size = sizeof(*uvmexp);
 
-		return sysctl(uvmexp_mib, 2, uvmexp, &size, NULL, 0) >= 0 ? 1 : 0;
+		if (sysctl(uvmexp_mib, 2, uvmexp, &size, NULL, 0) >= 0) {
+			return 1;
+		}
+
+		return 0;
 	}
 
 	const char *
