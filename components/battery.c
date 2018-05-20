@@ -107,6 +107,10 @@
 				return NULL;
 			}
 
+			if (current_now == 0) {
+				return NULL;
+			}
+
 			timeleft = (double)charge_now / (double)current_now;
 			h = timeleft;
 			m = (timeleft - (double)h) * 60;
