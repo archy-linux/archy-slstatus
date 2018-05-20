@@ -7,6 +7,26 @@
 
 #if defined(__linux__)
 	#include <limits.h>
+	#include <unistd.h>
+
+	#define CHARGE_NOW    "/sys/class/power_supply/%s/charge_now"
+	#define ENERGY_NOW    "/sys/class/power_supply/%s/energy_now"
+	#define CURRENT_NOW   "/sys/class/power_supply/%s/current_now"
+	#define POWER_NOW     "/sys/class/power_supply/%s/power_now"
+
+	static const char *
+	pick(const char *bat, const char *f1, const char *f2, char *path, size_t length)
+	{
+		if (esnprintf(path, length, f1, bat) > 0 && access(path, R_OK) == 0) {
+			return f1;
+		}
+
+		if (esnprintf(path, length, f2, bat) > 0 && access(path, R_OK) == 0) {
+			return f2;
+		}
+
+		return NULL;
+	}
 
 	const char *
 	battery_perc(const char *bat)
@@ -72,21 +92,14 @@
 			return NULL;
 		}
 
+		if (pick(bat, CHARGE_NOW, ENERGY_NOW, path, sizeof (path)) == NULL ||
+		    pscanf(path, "%d", &charge_now) < 0) {
+			return NULL;
+		}
+
 		if (!strcmp(state, "Discharging")) {
-			if (esnprintf(path, sizeof(path),
-                                      "/sys/class/power_supply/%s/charge_now",
-			              bat) < 0) {
-				return NULL;
-			}
-			if (pscanf(path, "%d", &charge_now) != 1) {
-				return NULL;
-			}
-			if (esnprintf(path, sizeof(path),
-			              "/sys/class/power_supply/%s/current_now",
-			              bat) < 0) {
-				return NULL;
-			}
-			if (pscanf(path, "%d", &current_now) != 1) {
+			if (pick(bat, CURRENT_NOW, POWER_NOW, path, sizeof (path)) == NULL ||
+			    pscanf(path, "%d", &current_now) < 0) {
 				return NULL;
 			}
 
