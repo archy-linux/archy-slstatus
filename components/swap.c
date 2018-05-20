@@ -76,6 +76,10 @@
 		}
 		sscanf(match, "SwapFree: %ld kB\n", &free);
 
+		if (total == 0) {
+			return NULL;
+		}
+
 		return bprintf("%d%%", 100 * (total - free - cached) / total);
 	}
 
