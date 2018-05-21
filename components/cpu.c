@@ -20,7 +20,7 @@
 			return NULL;
 		}
 
-		return fmt_human_10(freq * 1000);
+		return fmt_human(freq * 1000, 1000);
 	}
 
 	const char *
@@ -67,7 +67,7 @@
 			return NULL;
 		}
 
-		return fmt_human_10((size_t)freq * 1000 * 1000);
+		return fmt_human((size_t)freq * 1000 * 1000, 1000);
 	}
 
 	const char *

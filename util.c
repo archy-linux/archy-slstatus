@@ -87,32 +87,24 @@ bprintf(const char *fmt, ...)
 }
 
 const char *
-fmt_human_2(size_t num)
+fmt_human(size_t num, int base)
 {
 	size_t i;
 	double scaled;
-	const char *prefix[] = { "", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei",
-	                         "Zi", "Yi" };
+	const char *siprefix[] = { "", "k", "M", "G", "T", "P", "E", "Z", "Y" };
+	const char *iecprefix[] = { "", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei",
+	                            "Zi", "Yi" };
+	char *prefix[9];
+
+	if (base == 1000) {
+		memcpy(prefix, siprefix, sizeof(prefix));
+	} else if (base == 1024) {
+		memcpy(prefix, iecprefix, sizeof(prefix));
+	}
 
 	scaled = num;
 	for (i = 0; i < LEN(prefix) && scaled >= 1024; i++) {
-		scaled /= 1024.0;
-	}
-
-	return bprintf("%.1f%s", scaled, prefix[i]);
-}
-
-const char *
-fmt_human_10(size_t num)
-{
-	size_t i;
-	double scaled;
-	const char *prefix[] = { "", "K", "M", "G", "T", "P", "E",
-	                         "Z", "Y" };
-
-	scaled = num;
-	for (i = 0; i < LEN(prefix) && scaled >= 1000; i++) {
-		scaled /= 1000.0;
+		scaled /= base;
 	}
 
 	return bprintf("%.1f%s", scaled, prefix[i]);

@@ -29,7 +29,8 @@
 			return NULL;
 		}
 
-		return fmt_human_2((rxbytes - oldrxbytes) * 1000 / interval);
+		return fmt_human((rxbytes - oldrxbytes) * 1000 / interval,
+		                 1024);
 	}
 
 	const char *
@@ -54,7 +55,8 @@
 			return NULL;
 		}
 
-		return fmt_human_2((txbytes - oldtxbytes) * 1000 / interval);
+		return fmt_human((txbytes - oldtxbytes) * 1000 / interval,
+		                 1024);
 	}
 #elif defined(__OpenBSD__)
 	#include <string.h>
@@ -95,7 +97,8 @@
 			return NULL;
 		}
 
-		return fmt_human_2((rxbytes - oldrxbytes) * 1000 / interval);
+		return fmt_human((rxbytes - oldrxbytes) * 1000 / interval,
+		                 1024);
 	}
 
 	const char *
@@ -130,6 +133,7 @@
 			return NULL;
 		}
 
-		return fmt_human_2((txbytes - oldtxbytes) * 1000 / interval);
+		return fmt_human_2((txbytes - oldtxbytes) * 1000 / interval,
+		                   1024);
 	}
 #endif
