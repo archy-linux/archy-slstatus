@@ -42,7 +42,7 @@ difftimespec(struct timespec *res, struct timespec *a, struct timespec *b)
 static void
 usage(void)
 {
-	die("usage: %s [-so]", argv0);
+	die("usage: %s [-s]", argv0);
 }
 
 int
@@ -51,17 +51,14 @@ main(int argc, char *argv[])
 	struct sigaction act;
 	struct timespec start, current, diff, intspec, wait;
 	size_t i, len;
-	int sflag, oflag, ret;
+	int sflag, ret;
 	char status[MAXLEN];
 	const char *res;
 
-	sflag = oflag = 0;
+	sflag = 0;
 	ARGBEGIN {
 		case 's':
 			sflag = 1;
-			break;
-		case 'o':
-			oflag = 1;
 			break;
 		default:
 			usage();
@@ -110,10 +107,6 @@ main(int argc, char *argv[])
 				die("XStoreName: Allocation failed");
 			}
 			XFlush(dpy);
-		}
-
-		if (oflag) {
-			done = 1;
 		}
 
 		if (!done) {
