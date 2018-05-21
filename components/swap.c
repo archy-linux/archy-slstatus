@@ -135,29 +135,27 @@
 	#include <sys/types.h>
 	#include <unistd.h>
 
-	static void
+	static int
 	getstats(int *total, int *used)
 	{
 		struct swapent *sep, *fsep;
 		int rnswap, nswap, i;
 
-		nswap = swapctl(SWAP_NSWAP, 0, 0);
-		if (nswap < 1) {
+		if ((nswap = swapctl(SWAP_NSWAP, 0, 0)) < 1) {
 			warn("swaptctl 'SWAP_NSWAP':");
+			return 1;
 		}
-
-		fsep = sep = calloc(nswap, sizeof(*sep));
-		if (!sep) {
+		if (!(fsep = sep = calloc(nswap, sizeof(*sep)))) {
 			warn("calloc 'nswap':");
+			return 1;
 		}
-
-		rnswap = swapctl(SWAP_STATS, (void *)sep, nswap);
-		if (rnswap < 0) {
+		if ((rnswap = swapctl(SWAP_STATS, (void *)sep, nswap)) < 0) {
 			warn("swapctl 'SWAP_STATA':");
+			return 1;
 		}
-
 		if (nswap != rnswap) {
 			warn("getstats: SWAP_STATS != SWAP_NSWAP");
+			return 1;
 		}
 
 		*total = 0;
@@ -169,6 +167,8 @@
 		}
 
 		free(fsep);
+
+		return 0;
 	}
 
 	const char *
@@ -176,7 +176,9 @@
 	{
 		int total, used;
 
-		getstats(&total, &used);
+		if (getstats(&total, &used)) {
+			return NULL;
+		}
 
 		return fmt_human((total - used) * 1024, 1024);
 	}
@@ -186,7 +188,9 @@
 	{
 		int total, used;
 
-		getstats(&total, &used);
+		if (getstats(&total, &used)) {
+			return NULL;
+		}
 
 		if (total == 0) {
 			return NULL;
@@ -200,7 +204,9 @@
 	{
 		int total, used;
 
-		getstats(&total, &used);
+		if (getstats(&total, &used)) {
+			return NULL;
+		}
 
 		return fmt_human(total * 1024, 1024);
 	}
@@ -210,7 +216,9 @@
 	{
 		int total, used;
 
-		getstats(&total, &used);
+		if (getstats(&total, &used)) {
+			return NULL;
+		}
 
 		return fmt_human(used * 1024, 1024);
 	}
