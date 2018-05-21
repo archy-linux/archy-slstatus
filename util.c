@@ -89,21 +89,29 @@ bprintf(const char *fmt, ...)
 const char *
 fmt_human(size_t num, int base)
 {
-	size_t i;
 	double scaled;
-	const char *siprefix[] = { "", "k", "M", "G", "T", "P", "E", "Z", "Y" };
-	const char *iecprefix[] = { "", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei",
-	                            "Zi", "Yi" };
-	char *prefix[9];
+	size_t i, prefixlen;
+	const char **prefix;
+	const char *prefix_1000[] = { "", "k", "M", "G", "T", "P", "E", "Z", "Y" };
+	const char *prefix_1024[] = { "", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei",
+	                              "Zi", "Yi" };
 
-	if (base == 1000) {
-		memcpy(prefix, siprefix, sizeof(prefix));
-	} else if (base == 1024) {
-		memcpy(prefix, iecprefix, sizeof(prefix));
+	switch (base) {
+	case 1000:
+		prefix = prefix_1000;
+		prefixlen = LEN(prefix_1000);
+		break;
+	case 1024:
+		prefix = prefix_1024;
+		prefixlen = LEN(prefix_1024);
+		break;
+	default:
+		warn("fmt_human: Invalid base");
+		return NULL;
 	}
 
 	scaled = num;
-	for (i = 0; i < LEN(prefix) && scaled >= 1024; i++) {
+	for (i = 0; i < prefixlen && scaled >= base; i++) {
 		scaled /= base;
 	}
 
