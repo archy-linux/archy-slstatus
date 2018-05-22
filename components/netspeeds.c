@@ -134,6 +134,6 @@
 		}
 
 		return fmt_human((txbytes - oldtxbytes) * 1000 / interval,
-		                   1024);
+		                 1024);
 	}
 #endif
