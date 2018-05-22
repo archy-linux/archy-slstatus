@@ -102,7 +102,9 @@ main(int argc, char *argv[])
 		}
 
 		if (sflag) {
-			printf("%s\n", status);
+			if (printf("%s\n", status) < 0) {
+				die("printf:");
+			}
 		} else {
 			if (XStoreName(dpy, DefaultRootWindow(dpy), status) < 0) {
 				die("XStoreName: Allocation failed");
