@@ -48,6 +48,24 @@ die(const char *fmt, ...)
 	exit(1);
 }
 
+static int
+evsnprintf(char *str, size_t size, const char *fmt, va_list ap)
+{
+	int ret;
+
+	ret = vsnprintf(str, size, fmt, ap);
+
+	if (ret < 0) {
+		warn("vsnprintf:");
+		return -1;
+	} else if ((size_t)ret >= size) {
+		warn("vsnprintf: Output truncated");
+		return -1;
+	}
+
+	return ret;
+}
+
 int
 esnprintf(char *str, size_t size, const char *fmt, ...)
 {
@@ -55,16 +73,8 @@ esnprintf(char *str, size_t size, const char *fmt, ...)
 	int ret;
 
 	va_start(ap, fmt);
-	ret = vsnprintf(str, size, fmt, ap);
+	ret = evsnprintf(str, size, fmt, ap);
 	va_end(ap);
-
-	if (ret < 0) {
-		warn("snprintf:");
-		return -1;
-	} else if ((size_t)ret >= size) {
-		warn("snprintf: Output truncated");
-		return -1;
-	}
 
 	return ret;
 }
@@ -76,14 +86,10 @@ bprintf(const char *fmt, ...)
 	int ret;
 
 	va_start(ap, fmt);
-	if ((ret = vsnprintf(buf, sizeof(buf), fmt, ap)) < 0) {
-		warn("vsnprintf:");
-	} else if ((size_t)ret >= sizeof(buf)) {
-		warn("vsnprintf: Output truncated");
-	}
+	ret = evsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
 
-	return buf;
+	return (ret < 0) ? NULL : buf;
 }
 
 const char *
