@@ -34,6 +34,8 @@ static const char unknown_str[] = "n/a";
  * ipv6                 IPv6 address                    interface name (eth0)
  * kernel_release       `uname -r`                      NULL
  * keyboard_indicators  caps/num lock indicators        NULL
+ * keymap               layout (variant) of current     NULL
+ *                      keymap
  * load_avg             load average                    NULL
  * netspeed_rx          receive network speed           interface name (wlan0)
  * netspeed_tx          transfer network speed          interface name (wlan0)

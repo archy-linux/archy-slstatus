@@ -37,6 +37,9 @@ const char *kernel_release(void);
 /* keyboard_indicators */
 const char *keyboard_indicators(void);
 
+/* keymap */
+const char *keymap(void);
+
 /* load_avg */
 const char *load_avg(const char *);
 
