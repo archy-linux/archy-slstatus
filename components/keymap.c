@@ -7,21 +7,15 @@
 
 #include "../util.h"
 
-#define LAYOUT_MAX 256
-
-/* Given a token (sym) from the xkb_symbols string
- * check whether it is a valid layout/variant. The
- * EXCLUDES array contains invalid layouts/variants
- * that are part of the xkb rules config.
- */
 static int
-IsLayoutOrVariant(char *sym)
+valid_layout_or_variant(char *sym)
 {
-	static const char* EXCLUDES[] = { "evdev", "inet", "pc", "base" };
-
 	size_t i;
-	for (i = 0; i < sizeof(EXCLUDES)/sizeof(EXCLUDES[0]); ++i) {
-		if (strstr(sym, EXCLUDES[i])) {
+	/* invalid symbols from xkb rules config */
+	static const char *invalid[] = { "evdev", "inet", "pc", "base" };
+
+	for (i = 0; i < LEN(invalid); i++) {
+		if (!strncmp(sym, invalid[i], strlen(invalid[i]))) {
 			return 0;
 		}
 	}
@@ -29,70 +23,65 @@ IsLayoutOrVariant(char *sym)
 	return 1;
 }
 
-static void
-GetKeyLayout(char *syms, char layout[], int groupNum)
+static char *
+get_layout(char *syms, int grp_num)
 {
-	char *token, *copy, *delims;
-	int group;
+	char *tok, *layout;
+	int grp;
 
-	delims = "+:";
-	group = 0;
-	copy = strdup(syms);
-	token = strtok(copy, delims);
-	while (token != NULL && group <= groupNum) {
-		/* Ignore :2,:3,:4 which represent additional layout
- 		 * groups
- 		 */
-		if (IsLayoutOrVariant(token)
-		    && !(strlen(token) == 1 && isdigit(token[0]))) {
-			strncpy (layout, token, LAYOUT_MAX);
-			group++;
+	layout = NULL;
+	tok = strtok(syms, "+:");
+	for (grp = 0; tok && grp <= grp_num; tok = strtok(NULL, "+:")) {
+		if (!valid_layout_or_variant(tok)) {
+			continue;
+		} else if (strlen(tok) == 1 && isdigit(tok[0])) {
+			/* ignore :2, :3, :4 (additional layout groups) */
+			continue;
 		}
-
-		token = strtok(NULL,delims);
+		layout = tok;
+		grp++;
 	}
 
-	free(copy);
+	return layout;
 }
 
 const char *
 keymap(void)
 {
-	static char layout[LAYOUT_MAX];
-
 	Display *dpy;
-	char *symbols = NULL;
-	XkbDescRec* desc = NULL;
+	XkbDescRec *desc;
+	XkbStateRec state;
+	char *symbols, *layout;
 
-	memset(layout, '\0', LAYOUT_MAX);
+	layout = NULL;
 
 	if (!(dpy = XOpenDisplay(NULL))) {
 		warn("XOpenDisplay: Failed to open display");
 		return NULL;
 	}
-
-	;
 	if (!(desc = XkbAllocKeyboard())) {
-		warn("XkbAllocKeyboard: failed to allocate keyboard");
-		XCloseDisplay(dpy);
-		return NULL;
+		warn("XkbAllocKeyboard: Failed to allocate keyboard");
+		goto end;
 	}
-
-	XkbGetNames(dpy, XkbSymbolsNameMask, desc);
-	if (desc->names) {
-		XkbStateRec state;
-		XkbGetState(dpy, XkbUseCoreKbd, &state);
-
-		symbols = XGetAtomName(dpy, desc->names->symbols);
-		GetKeyLayout(symbols, layout, state.group);
-		XFree(symbols);
-	} else {
-		warn("XkbGetNames: failed to retrieve symbols for keys");
-		return NULL;
+	if (XkbGetNames(dpy, XkbSymbolsNameMask, desc)) {
+		warn("XkbGetNames: Failed to retrieve key symbols");
+		goto end;
 	}
-
+	if (XkbGetState(dpy, XkbUseCoreKbd, &state)) {
+		warn("XkbGetState: Failed to retrieve keyboard state");
+		goto end;
+	}
+	if (!(symbols = XGetAtomName(dpy, desc->names->symbols))) {
+		warn("XGetAtomName: Failed to get atom name");
+		goto end;
+	}
+	layout = (char *)bprintf("%s", get_layout(symbols, state.group));
+	XFree(symbols);
+end:
 	XkbFreeKeyboard(desc, XkbSymbolsNameMask, 1);
-	XCloseDisplay(dpy);
+	if (XCloseDisplay(dpy)) {
+		warn("XCloseDisplay: Failed to close display");
+	}
 
 	return layout;
 }
