@@ -20,10 +20,11 @@ IsLayoutOrVariant(char *sym)
 	static const char* EXCLUDES[] = { "evdev", "inet", "pc", "base" };
 
 	size_t i;
-	for (i = 0; i < sizeof(EXCLUDES)/sizeof(EXCLUDES[0]); ++i)
+	for (i = 0; i < sizeof(EXCLUDES)/sizeof(EXCLUDES[0]); ++i) {
 		if (strstr(sym, EXCLUDES[i])) {
 			return 0;
 		}
+	}
 
 	return 1;
 }
