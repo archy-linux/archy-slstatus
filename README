@@ -19,6 +19,7 @@ Features
 - IP address (IPv4 and IPv6)
 - Kernel version
 - Keyboard indicators
+- Keymap
 - Load average
 - Network speeds (RX and TX)
 - Number of files in a directory (hint: Maildir)
