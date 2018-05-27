@@ -44,6 +44,6 @@
 		}
 
 		/* kelvin to celsius */
-		return bprintf("%d", (temp.value - 273150000) / 1000000);
+		return bprintf("%d", (temp.value - 273150000) / 1E6);
 	}
 #endif
