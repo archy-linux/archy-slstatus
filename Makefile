@@ -30,18 +30,37 @@ COM =\
 
 all: slstatus
 
-slstatus: slstatus.o $(COM:=.o) $(REQ:=.o)
+components/battery.o: components/battery.c config.mk $(REQ:=.h)
+components/cpu.o: components/cpu.c config.mk $(REQ:=.h)
+components/datetime.o: components/datetime.c config.mk $(REQ:=.h)
+components/disk.o: components/disk.c config.mk $(REQ:=.h)
+components/entropy.o: components/entropy.c config.mk $(REQ:=.h)
+components/hostname.o: components/hostname.c config.mk $(REQ:=.h)
+components/ip.o: components/ip.c config.mk $(REQ:=.h)
+components/kernel_release.o: components/kernel_release.c config.mk $(REQ:=.h)
+components/keyboard_indicators.o: components/keyboard_indicators.c config.mk $(REQ:=.h)
+components/keymap.o: components/keymap.c config.mk $(REQ:=.h)
+components/load_avg.o: components/load_avg.c config.mk $(REQ:=.h)
+components/netspeeds.o: components/netspeeds.c config.mk $(REQ:=.h)
+components/num_files.o: components/num_files.c config.mk $(REQ:=.h)
+components/ram.o: components/ram.c config.mk $(REQ:=.h)
+components/run_command.o: components/run_command.c config.mk $(REQ:=.h)
+components/swap.o: components/swap.c config.mk $(REQ:=.h)
+components/temperature.o: components/temperature.c config.mk $(REQ:=.h)
+components/uptime.o: components/uptime.c config.mk $(REQ:=.h)
+components/user.o: components/user.c config.mk $(REQ:=.h)
+components/volume.o: components/volume.c config.mk $(REQ:=.h)
+components/wifi.o: components/wifi.c config.mk $(REQ:=.h)
 slstatus.o: slstatus.c slstatus.h arg.h config.h config.mk $(REQ:=.h)
-$(COM:=.o): config.mk $(REQ:=.h)
+
+.c.o:
+	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) $<
 
 config.h:
 	cp config.def.h $@
 
-.o:
+slstatus: slstatus.o $(COM:=.o) $(REQ:=.o)
 	$(CC) -o $@ $(LDFLAGS) $< $(COM:=.o) $(REQ:=.o) $(LDLIBS)
-
-.c.o:
-	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) $<
 
 clean:
 	rm -f slstatus slstatus.o $(COM:=.o) $(REQ:=.o)
