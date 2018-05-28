@@ -60,7 +60,7 @@ config.h:
 	cp config.def.h $@
 
 slstatus: slstatus.o $(COM:=.o) $(REQ:=.o)
-	$(CC) -o $@ $(LDFLAGS) $< $(COM:=.o) $(REQ:=.o) $(LDLIBS)
+	$(CC) -o $@ $(LDFLAGS) $(COM:=.o) $(REQ:=.o) slstatus.o $(LDLIBS)
 
 clean:
 	rm -f slstatus slstatus.o $(COM:=.o) $(REQ:=.o)
