@@ -107,7 +107,6 @@
 	}
 #elif defined(__OpenBSD__)
 	#include <stdlib.h>
-	#include <sys/param.h> /* dbtob */
 	#include <sys/swap.h>
 	#include <sys/types.h>
 	#include <unistd.h>
