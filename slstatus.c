@@ -73,10 +73,6 @@ main(int argc, char *argv[])
 	sigaction(SIGINT,  &act, NULL);
 	sigaction(SIGTERM, &act, NULL);
 
-	if (sflag) {
-		setbuf(stdout, NULL);
-	}
-
 	if (!sflag && !(dpy = XOpenDisplay(NULL))) {
 		die("XOpenDisplay: Failed to open display");
 	}
@@ -99,9 +95,10 @@ main(int argc, char *argv[])
 		}
 
 		if (sflag) {
-			if (printf("%s\n", status) < 0) {
-				die("printf:");
-			}
+			puts(status);
+			fflush(stdout);
+			if (ferror(stdout))
+				die("puts:");
 		} else {
 			if (XStoreName(dpy, DefaultRootWindow(dpy), status) < 0) {
 				die("XStoreName: Allocation failed");
