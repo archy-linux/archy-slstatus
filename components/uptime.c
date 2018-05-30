@@ -29,8 +29,6 @@ format(int uptime)
 		return format(uptime);
 	}
 #elif defined(__OpenBSD__)
-	#include <errno.h>
-	#include <string.h>
 	#include <sys/sysctl.h>
 	#include <sys/time.h>
 

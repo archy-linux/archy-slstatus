@@ -1,8 +1,6 @@
 /* See LICENSE file for copyright and license details. */
-#include <errno.h>
 #include <pwd.h>
 #include <stdio.h>
-#include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
 
