@@ -109,6 +109,7 @@
 	{
 		struct ieee80211_bssid bssid;
 		int sockfd;
+		uint8_t zero_bssid[IEEE80211_ADDR_LEN];
 
 		memset(&bssid, 0, sizeof(bssid));
 		memset(nr, 0, sizeof(struct ieee80211_nodereq));
@@ -119,6 +120,12 @@
 		strlcpy(bssid.i_name, iface, sizeof(bssid.i_name));
 		if ((ioctl(sockfd, SIOCG80211BSSID, &bssid)) < 0) {
 			warn("ioctl 'SIOCG80211BSSID':");
+			close(sockfd);
+			return 0;
+		}
+		memset(&zero_bssid, 0, sizeof(zero_bssid));
+		if (memcmp(bssid.i_bssid, zero_bssid,
+		    IEEE80211_ADDR_LEN) == 0) {
 			close(sockfd);
 			return 0;
 		}
