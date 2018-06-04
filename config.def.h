@@ -31,7 +31,8 @@ static const char unknown_str[] = "n/a";
  * ipv4                 IPv4 address                    interface name (eth0)
  * ipv6                 IPv6 address                    interface name (eth0)
  * kernel_release       `uname -r`                      NULL
- * keyboard_indicators  caps/num lock indicators        NULL
+ * keyboard_indicators  caps/num lock indicators        format string (c?n?)
+ *                                                      see keyboard_indicators.c
  * keymap               layout (variant) of current     NULL
  *                      keymap
  * load_avg             load average                    NULL
