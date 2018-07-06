@@ -4,15 +4,17 @@
 #include "../util.h"
 
 #if defined(__linux__)
+	#include <inttypes.h>
+
 	const char *
 	ram_free(void)
 	{
-		long free;
+		uint64_t free;
 
 		if (pscanf("/proc/meminfo",
-		           "MemTotal: %ld kB\n"
-		           "MemFree: %ld kB\n"
-		           "MemAvailable: %ld kB\n",
+		           "MemTotal: %" PRIu64 " kB\n"
+		           "MemFree: %" PRIu64 " kB\n"
+		           "MemAvailable: %" PRIu64 " kB\n",
 		           &free, &free, &free) != 3) {
 			return NULL;
 		}
@@ -23,13 +25,13 @@
 	const char *
 	ram_perc(void)
 	{
-		long total, free, buffers, cached;
+		uint64_t total, free, buffers, cached;
 
 		if (pscanf("/proc/meminfo",
-		           "MemTotal: %ld kB\n"
-		           "MemFree: %ld kB\n"
-		           "MemAvailable: %ld kB\nBuffers: %ld kB\n"
-		           "Cached: %ld kB\n",
+		           "MemTotal: %" PRIu64 " kB\n"
+		           "MemFree: %" PRIu64 " kB\n"
+		           "MemAvailable: %" PRIu64 " kB\nBuffers: %ld kB\n"
+		           "Cached: %" PRIu64 " kB\n",
 		           &total, &free, &buffers, &buffers, &cached) != 5) {
 			return NULL;
 		}
@@ -41,9 +43,9 @@
 	const char *
 	ram_total(void)
 	{
-		long total;
+		uint64_t total;
 
-		if (pscanf("/proc/meminfo", "MemTotal: %ld kB\n",
+		if (pscanf("/proc/meminfo", "MemTotal: %" PRIu64 " kB\n",
 		           &total) != 1) {
 			return NULL;
 		}
@@ -54,13 +56,13 @@
 	const char *
 	ram_used(void)
 	{
-		long total, free, buffers, cached;
+		uint64_t total, free, buffers, cached;
 
 		if (pscanf("/proc/meminfo",
-		           "MemTotal: %ld kB\n"
-		           "MemFree: %ld kB\n"
-		           "MemAvailable: %ld kB\nBuffers: %ld kB\n"
-		           "Cached: %ld kB\n",
+		           "MemTotal: %" PRIu64 " kB\n"
+		           "MemFree: %" PRIu64 " kB\n"
+		           "MemAvailable: %" PRIu64 " kB\nBuffers: %" PRIu64 " kB\n"
+		           "Cached: %" PRIu64 " kB\n",
 		           &total, &free, &buffers, &buffers, &cached) != 5) {
 			return NULL;
 		}
