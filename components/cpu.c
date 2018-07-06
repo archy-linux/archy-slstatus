@@ -45,6 +45,7 @@
 		                (a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6]))));
 	}
 #elif defined(__OpenBSD__)
+	#include <inttypes.h>
 	#include <sys/param.h>
 	#include <sys/sched.h>
 	#include <sys/sysctl.h>
@@ -73,8 +74,8 @@
 	cpu_perc(void)
 	{
 		int mib[2];
-		static long int a[CPUSTATES];
-		long int b[CPUSTATES];
+		static uint64_t a[CPUSTATES];
+		uint64_t b[CPUSTATES];
 		size_t size;
 
 		mib[0] = CTL_KERN;
