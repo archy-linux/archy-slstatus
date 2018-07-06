@@ -8,11 +8,6 @@
 	#include <limits.h>
 	#include <unistd.h>
 
-	#define CHARGE_NOW "/sys/class/power_supply/%s/charge_now"
-	#define ENERGY_NOW "/sys/class/power_supply/%s/energy_now"
-	#define CURRENT_NOW "/sys/class/power_supply/%s/current_now"
-	#define POWER_NOW "/sys/class/power_supply/%s/power_now"
-
 	static const char *
 	pick(const char *bat, const char *f1, const char *f2, char *path,
 	     size_t length)
@@ -94,13 +89,16 @@
 			return NULL;
 		}
 
-		if (!pick(bat, CHARGE_NOW, ENERGY_NOW, path, sizeof(path)) ||
+		if (!pick(bat, "/sys/class/power_supply/%s/charge_now",
+		          "/sys/class/power_supply/%s/energy_now",
+		          path, sizeof(path)) ||
 		    pscanf(path, "%d", &charge_now) < 0) {
 			return NULL;
 		}
 
 		if (!strcmp(state, "Discharging")) {
-			if (!pick(bat, CURRENT_NOW, POWER_NOW, path,
+			if (!pick(bat, "/sys/class/power_supply/%s/current_now",
+			          "/sys/class/power_supply/%s/power_now", path,
 			          sizeof(path)) ||
 			    pscanf(path, "%d", &current_now) < 0) {
 				return NULL;
