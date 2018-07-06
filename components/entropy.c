@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #if defined(__linux__)
+	#include <inttypes.h>
 	#include <stdio.h>
-	#include <stdint.h>
 
 	#include "../util.h"
 
@@ -11,11 +11,11 @@
 		uint64_t num;
 
 		if (pscanf("/proc/sys/kernel/random/entropy_avail",
-		           "%d", &num) != 1) {
+		           "%" PRIu64, &num) != 1) {
 			return NULL;
 		}
 
-		return bprintf("%d", num);
+		return bprintf("%" PRIu64, num);
 	}
 #elif defined(__OpenBSD__)
 	const char *
