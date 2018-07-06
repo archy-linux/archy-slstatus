@@ -13,7 +13,7 @@
 	#include <linux/wireless.h>
 
 	const char *
-	wifi_perc(const char *iface)
+	wifi_perc(const char *interface)
 	{
 		int i, cur;
 		int total = 70; /* the max of /proc/net/wireless */
@@ -24,7 +24,7 @@
 
 		if (esnprintf(path, sizeof(path),
 		              "/sys/class/net/%s/operstate",
-		              iface) < 0) {
+		              interface) < 0) {
 			return NULL;
 		}
 		if (!(fp = fopen(path, "r"))) {
@@ -51,11 +51,11 @@
 			return NULL;
 		}
 
-		if (!(datastart = strstr(buf, iface))) {
+		if (!(datastart = strstr(buf, interface))) {
 			return NULL;
 		}
 
-		datastart = (datastart+(strlen(iface)+1));
+		datastart = (datastart+(strlen(interface)+1));
 		sscanf(datastart + 1, " %*d   %d  %*d  %*d\t\t  %*d\t   "
 		       "%*d\t\t%*d\t\t %*d\t  %*d\t\t %*d", &cur);
 
@@ -63,7 +63,7 @@
 	}
 
 	const char *
-	wifi_essid(const char *iface)
+	wifi_essid(const char *interface)
 	{
 		static char id[IW_ESSID_MAX_SIZE+1];
 		int sockfd;
@@ -72,7 +72,7 @@
 		memset(&wreq, 0, sizeof(struct iwreq));
 		wreq.u.essid.length = IW_ESSID_MAX_SIZE+1;
 		if (esnprintf(wreq.ifr_name, sizeof(wreq.ifr_name),
-		              "%s", iface) < 0) {
+		              "%s", interface) < 0) {
 			return NULL;
 		}
 
@@ -105,7 +105,7 @@
 	#include <sys/types.h>
 
 	static int
-	load_ieee80211_nodereq(const char *iface, struct ieee80211_nodereq *nr)
+	load_ieee80211_nodereq(const char *interface, struct ieee80211_nodereq *nr)
 	{
 		struct ieee80211_bssid bssid;
 		int sockfd;
@@ -117,7 +117,7 @@
 			warn("socket 'AF_INET':");
 			return 0;
 		}
-		strlcpy(bssid.i_name, iface, sizeof(bssid.i_name));
+		strlcpy(bssid.i_name, interface, sizeof(bssid.i_name));
 		if ((ioctl(sockfd, SIOCG80211BSSID, &bssid)) < 0) {
 			warn("ioctl 'SIOCG80211BSSID':");
 			close(sockfd);
@@ -129,7 +129,7 @@
 			close(sockfd);
 			return 0;
 		}
-		strlcpy(nr->nr_ifname, iface, sizeof(nr->nr_ifname));
+		strlcpy(nr->nr_ifname, interface, sizeof(nr->nr_ifname));
 		memcpy(&nr->nr_macaddr, bssid.i_bssid, sizeof(nr->nr_macaddr));
 		if ((ioctl(sockfd, SIOCG80211NODE, nr)) < 0 && nr->nr_rssi) {
 			warn("ioctl 'SIOCG80211NODE':");
@@ -141,12 +141,12 @@
 	}
 
 	const char *
-	wifi_perc(const char *iface)
+	wifi_perc(const char *interface)
 	{
 		struct ieee80211_nodereq nr;
 		int q;
 
-		if (load_ieee80211_nodereq(iface, &nr)) {
+		if (load_ieee80211_nodereq(interface, &nr)) {
 			if (nr.nr_max_rssi) {
 				q = IEEE80211_NODEREQ_RSSI(&nr);
 			} else {
@@ -160,11 +160,11 @@
 	}
 
 	const char *
-	wifi_essid(const char *iface)
+	wifi_essid(const char *interface)
 	{
 		struct ieee80211_nodereq nr;
 
-		if (load_ieee80211_nodereq(iface, &nr)) {
+		if (load_ieee80211_nodereq(interface, &nr)) {
 			return bprintf("%s", nr.nr_nwid);
 		}
 

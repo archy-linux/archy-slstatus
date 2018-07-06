@@ -6,14 +6,14 @@
 #include "../util.h"
 
 const char *
-num_files(const char *dir)
+num_files(const char *path)
 {
 	struct dirent *dp;
 	DIR *fd;
 	int num;
 
-	if (!(fd = opendir(dir))) {
-		warn("opendir '%s':", dir);
+	if (!(fd = opendir(path))) {
+		warn("opendir '%s':", path);
 		return NULL;
 	}
 
