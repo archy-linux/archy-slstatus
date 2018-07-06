@@ -36,6 +36,10 @@
 			return NULL;
 		}
 
+		if (total == 0) {
+			return NULL;
+		}
+
 		return bprintf("%d", 100 * ((total - free) -
 		                            (buffers + cached)) / total);
 	}
