@@ -4,7 +4,7 @@
 #include "../util.h"
 
 #if defined(__linux__)
-	#include <inttypes.h>
+	#include <stdint.h>
 
 	const char *
 	ram_free(void)
@@ -12,9 +12,9 @@
 		uintmax_t free;
 
 		if (pscanf("/proc/meminfo",
-		           "MemTotal: %" PRIuMAX " kB\n"
-		           "MemFree: %" PRIuMAX " kB\n"
-		           "MemAvailable: %" PRIuMAX " kB\n",
+		           "MemTotal: %ju kB\n"
+		           "MemFree: %ju kB\n"
+		           "MemAvailable: %ju kB\n",
 		           &free, &free, &free) != 3) {
 			return NULL;
 		}
@@ -28,10 +28,10 @@
 		uintmax_t total, free, buffers, cached;
 
 		if (pscanf("/proc/meminfo",
-		           "MemTotal: %" PRIuMAX " kB\n"
-		           "MemFree: %" PRIuMAX " kB\n"
-		           "MemAvailable: %" PRIuMAX " kB\nBuffers: %ld kB\n"
-		           "Cached: %" PRIuMAX " kB\n",
+		           "MemTotal: %ju kB\n"
+		           "MemFree: %ju kB\n"
+		           "MemAvailable: %ju kB\nBuffers: %ju kB\n"
+		           "Cached: %ju kB\n",
 		           &total, &free, &buffers, &buffers, &cached) != 5) {
 			return NULL;
 		}
@@ -49,7 +49,7 @@
 	{
 		uintmax_t total;
 
-		if (pscanf("/proc/meminfo", "MemTotal: %" PRIuMAX " kB\n",
+		if (pscanf("/proc/meminfo", "MemTotal: %ju kB\n",
 		           &total) != 1) {
 			return NULL;
 		}
@@ -63,10 +63,10 @@
 		uintmax_t total, free, buffers, cached;
 
 		if (pscanf("/proc/meminfo",
-		           "MemTotal: %" PRIuMAX " kB\n"
-		           "MemFree: %" PRIuMAX " kB\n"
-		           "MemAvailable: %" PRIuMAX " kB\nBuffers: %" PRIuMAX " kB\n"
-		           "Cached: %" PRIuMAX " kB\n",
+		           "MemTotal: %ju kB\n"
+		           "MemFree: %ju kB\n"
+		           "MemAvailable: %ju kB\nBuffers: %ju kB\n"
+		           "Cached: %ju kB\n",
 		           &total, &free, &buffers, &buffers, &cached) != 5) {
 			return NULL;
 		}

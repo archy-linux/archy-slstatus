@@ -5,7 +5,7 @@
 #include "../util.h"
 
 #if defined(__linux__)
-	#include <inttypes.h>
+	#include <stdint.h>
 
 	const char *
 	netspeed_rx(const char *interface)
@@ -22,7 +22,7 @@
 		              interface) < 0) {
 			return NULL;
 		}
-		if (pscanf(path, "%" PRIuMAX, &rxbytes) != 1) {
+		if (pscanf(path, "%ju", &rxbytes) != 1) {
 			return NULL;
 		}
 		if (oldrxbytes == 0) {
@@ -48,7 +48,7 @@
 		              interface) < 0) {
 			return NULL;
 		}
-		if (pscanf(path, "%" PRIuMAX, &txbytes) != 1) {
+		if (pscanf(path, "%ju", &txbytes) != 1) {
 			return NULL;
 		}
 		if (oldtxbytes == 0) {

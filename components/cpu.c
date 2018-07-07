@@ -1,13 +1,11 @@
 /* See LICENSE file for copyright and license details. */
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "../util.h"
 
 #if defined(__linux__)
-	#include <inttypes.h>
-	#include <stdint.h>
-
 	const char *
 	cpu_freq(void)
 	{
@@ -15,7 +13,7 @@
 
 		/* in kHz */
 		if (pscanf("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq",
-		            "%" PRIuMAX, &freq) != 1) {
+		            "%ju", &freq) != 1) {
 			return NULL;
 		}
 
@@ -45,7 +43,6 @@
 		                (a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6]))));
 	}
 #elif defined(__OpenBSD__)
-	#include <inttypes.h>
 	#include <sys/param.h>
 	#include <sys/sched.h>
 	#include <sys/sysctl.h>

@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include <inttypes.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <time.h>
 
@@ -19,5 +19,5 @@ uptime(void)
 	h = uptime.tv_sec / 3600;
 	m = uptime.tv_sec % 3600 / 60;
 
-	return bprintf("%" PRIuMAX "h %" PRIuMAX "m", h, m);
+	return bprintf("%juh %jum", h, m);
 }

@@ -1,6 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #if defined(__linux__)
-	#include <inttypes.h>
+	#include <stdint.h>
 	#include <stdio.h>
 
 	#include "../util.h"
@@ -11,11 +11,11 @@
 		uintmax_t num;
 
 		if (pscanf("/proc/sys/kernel/random/entropy_avail",
-		           "%" PRIuMAX, &num) != 1) {
+		           "%ju", &num) != 1) {
 			return NULL;
 		}
 
-		return bprintf("%" PRIuMAX, num);
+		return bprintf("%ju", num);
 	}
 #elif defined(__OpenBSD__)
 	const char *

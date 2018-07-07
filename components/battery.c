@@ -5,8 +5,8 @@
 #include "../util.h"
 
 #if defined(__linux__)
-	#include <inttypes.h>
 	#include <limits.h>
+	#include <stdint.h>
 	#include <unistd.h>
 
 	static const char *
@@ -93,7 +93,7 @@
 		if (!pick(bat, "/sys/class/power_supply/%s/charge_now",
 		          "/sys/class/power_supply/%s/energy_now",
 		          path, sizeof(path)) ||
-		    pscanf(path, "%" PRIuMAX, &charge_now) < 0) {
+		    pscanf(path, "%ju", &charge_now) < 0) {
 			return NULL;
 		}
 
@@ -101,7 +101,7 @@
 			if (!pick(bat, "/sys/class/power_supply/%s/current_now",
 			          "/sys/class/power_supply/%s/power_now", path,
 			          sizeof(path)) ||
-			    pscanf(path, "%" PRIuMAX, &current_now) < 0) {
+			    pscanf(path, "%ju", &current_now) < 0) {
 				return NULL;
 			}
 
@@ -113,7 +113,7 @@
 			h = timeleft;
 			m = (timeleft - (double)h) * 60;
 
-			return bprintf("%" PRIuMAX "h %" PRIuMAX "m", h, m);
+			return bprintf("%juh %jum", h, m);
 		}
 
 		return "";
