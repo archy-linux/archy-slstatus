@@ -5,13 +5,13 @@
 #include "../util.h"
 
 #if defined(__linux__)
-	#include <stdint.h>
+	#include <inttypes.h>
 
 	const char *
 	netspeed_rx(const char *interface)
 	{
-		uint64_t oldrxbytes;
-		static uint64_t rxbytes;
+		uintmax_t oldrxbytes;
+		static uintmax_t rxbytes;
 		extern const unsigned int interval;
 		char path[PATH_MAX];
 
@@ -22,7 +22,7 @@
 		              interface) < 0) {
 			return NULL;
 		}
-		if (pscanf(path, "%llu", &rxbytes) != 1) {
+		if (pscanf(path, "%" PRIuMAX, &rxbytes) != 1) {
 			return NULL;
 		}
 		if (oldrxbytes == 0) {
@@ -36,8 +36,8 @@
 	const char *
 	netspeed_tx(const char *interface)
 	{
-		uint64_t oldtxbytes;
-		static uint64_t txbytes;
+		uintmax_t oldtxbytes;
+		static uintmax_t txbytes;
 		extern const unsigned int interval;
 		char path[PATH_MAX];
 
@@ -48,7 +48,7 @@
 		              interface) < 0) {
 			return NULL;
 		}
-		if (pscanf(path, "%llu", &txbytes) != 1) {
+		if (pscanf(path, "%" PRIuMAX, &txbytes) != 1) {
 			return NULL;
 		}
 		if (oldtxbytes == 0) {
@@ -70,8 +70,8 @@
 	{
 		struct ifaddrs *ifal, *ifa;
 		struct if_data *ifd;
-		uint64_t oldrxbytes;
-		static uint64_t rxbytes;
+		uintmax_t oldrxbytes;
+		static uintmax_t rxbytes;
 		extern const unsigned int interval;
 		int if_ok = 0;
 
@@ -106,8 +106,8 @@
 	{
 		struct ifaddrs *ifal, *ifa;
 		struct if_data *ifd;
-		uint64_t oldtxbytes;
-		static uint64_t txbytes;
+		uintmax_t oldtxbytes;
+		static uintmax_t txbytes;
 		extern const unsigned int interval;
 		int if_ok = 0;
 

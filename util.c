@@ -94,7 +94,7 @@ bprintf(const char *fmt, ...)
 }
 
 const char *
-fmt_human(uint64_t num, int base)
+fmt_human(uintmax_t num, int base)
 {
 	double scaled;
 	size_t i, prefixlen;

@@ -8,14 +8,14 @@
 	const char *
 	entropy(void)
 	{
-		uint64_t num;
+		uintmax_t num;
 
 		if (pscanf("/proc/sys/kernel/random/entropy_avail",
-		           "%" PRIu64, &num) != 1) {
+		           "%" PRIuMAX, &num) != 1) {
 			return NULL;
 		}
 
-		return bprintf("%" PRIu64, num);
+		return bprintf("%" PRIuMAX, num);
 	}
 #elif defined(__OpenBSD__)
 	const char *

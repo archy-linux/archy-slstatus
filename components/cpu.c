@@ -11,11 +11,11 @@
 	const char *
 	cpu_freq(void)
 	{
-		uint64_t freq;
+		uintmax_t freq;
 
 		/* in kHz */
 		if (pscanf("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq",
-		            "%"SCNu64, &freq) != 1) {
+		            "%" PRIuMAX, &freq) != 1) {
 			return NULL;
 		}
 
@@ -74,8 +74,8 @@
 	cpu_perc(void)
 	{
 		int mib[2];
-		static uint64_t a[CPUSTATES];
-		uint64_t b[CPUSTATES];
+		static uintmax_t a[CPUSTATES];
+		uintmax_t b[CPUSTATES];
 		size_t size;
 
 		mib[0] = CTL_KERN;

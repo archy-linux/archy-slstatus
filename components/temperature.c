@@ -9,13 +9,13 @@
 	const char *
 	temp(const char *file)
 	{
-		uint64_t temp;
+		uintmax_t temp;
 
-		if(pscanf(file, "%" PRIu64, &temp) != 1) {
+		if(pscanf(file, "%" PRIuMAX, &temp) != 1) {
 			return NULL;
 		}
 
-		return bprintf("%" PRIu64, temp / 1000);
+		return bprintf("%" PRIuMAX, temp / 1000);
 	}
 #elif defined(__OpenBSD__)
 	#include <stdio.h>

@@ -9,12 +9,12 @@
 	const char *
 	ram_free(void)
 	{
-		uint64_t free;
+		uintmax_t free;
 
 		if (pscanf("/proc/meminfo",
-		           "MemTotal: %" PRIu64 " kB\n"
-		           "MemFree: %" PRIu64 " kB\n"
-		           "MemAvailable: %" PRIu64 " kB\n",
+		           "MemTotal: %" PRIuMAX " kB\n"
+		           "MemFree: %" PRIuMAX " kB\n"
+		           "MemAvailable: %" PRIuMAX " kB\n",
 		           &free, &free, &free) != 3) {
 			return NULL;
 		}
@@ -25,13 +25,13 @@
 	const char *
 	ram_perc(void)
 	{
-		uint64_t total, free, buffers, cached;
+		uintmax_t total, free, buffers, cached;
 
 		if (pscanf("/proc/meminfo",
-		           "MemTotal: %" PRIu64 " kB\n"
-		           "MemFree: %" PRIu64 " kB\n"
-		           "MemAvailable: %" PRIu64 " kB\nBuffers: %ld kB\n"
-		           "Cached: %" PRIu64 " kB\n",
+		           "MemTotal: %" PRIuMAX " kB\n"
+		           "MemFree: %" PRIuMAX " kB\n"
+		           "MemAvailable: %" PRIuMAX " kB\nBuffers: %ld kB\n"
+		           "Cached: %" PRIuMAX " kB\n",
 		           &total, &free, &buffers, &buffers, &cached) != 5) {
 			return NULL;
 		}
@@ -47,9 +47,9 @@
 	const char *
 	ram_total(void)
 	{
-		uint64_t total;
+		uintmax_t total;
 
-		if (pscanf("/proc/meminfo", "MemTotal: %" PRIu64 " kB\n",
+		if (pscanf("/proc/meminfo", "MemTotal: %" PRIuMAX " kB\n",
 		           &total) != 1) {
 			return NULL;
 		}
@@ -60,13 +60,13 @@
 	const char *
 	ram_used(void)
 	{
-		uint64_t total, free, buffers, cached;
+		uintmax_t total, free, buffers, cached;
 
 		if (pscanf("/proc/meminfo",
-		           "MemTotal: %" PRIu64 " kB\n"
-		           "MemFree: %" PRIu64 " kB\n"
-		           "MemAvailable: %" PRIu64 " kB\nBuffers: %" PRIu64 " kB\n"
-		           "Cached: %" PRIu64 " kB\n",
+		           "MemTotal: %" PRIuMAX " kB\n"
+		           "MemFree: %" PRIuMAX " kB\n"
+		           "MemAvailable: %" PRIuMAX " kB\nBuffers: %" PRIuMAX " kB\n"
+		           "Cached: %" PRIuMAX " kB\n",
 		           &total, &free, &buffers, &buffers, &cached) != 5) {
 			return NULL;
 		}

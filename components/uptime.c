@@ -8,7 +8,7 @@
 const char *
 uptime(void)
 {
-	uint64_t h, m;
+	uintmax_t h, m;
 	struct timespec uptime;
 
 	if (clock_gettime(CLOCK_BOOTTIME, &uptime) < 0) {
@@ -19,5 +19,5 @@ uptime(void)
 	h = uptime.tv_sec / 3600;
 	m = uptime.tv_sec % 3600 / 60;
 
-	return bprintf("%" PRIu64 "h %" PRIu64 "m", h, m);
+	return bprintf("%" PRIuMAX "h %" PRIuMAX "m", h, m);
 }
