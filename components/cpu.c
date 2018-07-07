@@ -53,7 +53,8 @@
 	const char *
 	cpu_freq(void)
 	{
-		int freq, mib[2];
+		int mib[2];
+		uintmax_t freq;
 		size_t size;
 
 		mib[0] = CTL_HW;
@@ -67,7 +68,7 @@
 			return NULL;
 		}
 
-		return fmt_human((size_t)freq * 1000 * 1000, 1000);
+		return fmt_human(freq * 1000 * 1000, 1000);
 	}
 
 	const char *
