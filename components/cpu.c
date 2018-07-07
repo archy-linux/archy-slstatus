@@ -68,7 +68,7 @@
 			return NULL;
 		}
 
-		return fmt_human(freq * 1000 * 1000, 1000);
+		return fmt_human(freq * 1E6, 1000);
 	}
 
 	const char *
