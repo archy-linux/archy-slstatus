@@ -5,6 +5,7 @@
 #include "../util.h"
 
 #if defined(__linux__)
+	#include <inttypes.h>
 	#include <limits.h>
 	#include <unistd.h>
 
@@ -76,7 +77,7 @@
 	const char *
 	battery_remaining(const char *bat)
 	{
-		int charge_now, current_now, m, h;
+		uint64_t charge_now, current_now, m, h;
 		double timeleft;
 		char path[PATH_MAX], state[12];
 
@@ -92,7 +93,7 @@
 		if (!pick(bat, "/sys/class/power_supply/%s/charge_now",
 		          "/sys/class/power_supply/%s/energy_now",
 		          path, sizeof(path)) ||
-		    pscanf(path, "%d", &charge_now) < 0) {
+		    pscanf(path, "%" PRIu64, &charge_now) < 0) {
 			return NULL;
 		}
 
@@ -100,7 +101,7 @@
 			if (!pick(bat, "/sys/class/power_supply/%s/current_now",
 			          "/sys/class/power_supply/%s/power_now", path,
 			          sizeof(path)) ||
-			    pscanf(path, "%d", &current_now) < 0) {
+			    pscanf(path, "%" PRIu64, &current_now) < 0) {
 				return NULL;
 			}
 
@@ -112,7 +113,7 @@
 			h = timeleft;
 			m = (timeleft - (double)h) * 60;
 
-			return bprintf("%dh %dm", h, m);
+			return bprintf("%" PRIu64 "h %" PRIu64 "m", h, m);
 		}
 
 		return "";
