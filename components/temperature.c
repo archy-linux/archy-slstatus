@@ -11,7 +11,7 @@
 	{
 		uintmax_t temp;
 
-		if(pscanf(file, "%ju", &temp) != 1) {
+		if (pscanf(file, "%ju", &temp) != 1) {
 			return NULL;
 		}
 

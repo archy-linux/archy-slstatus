@@ -80,7 +80,7 @@
 	#include <sys/types.h>
 	#include <unistd.h>
 
-	#define LOG1024 	10
+	#define LOG1024 10
 	#define pagetok(size, pageshift) (size_t)(size << (pageshift - LOG1024))
 
 	inline int

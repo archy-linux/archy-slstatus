@@ -32,7 +32,7 @@
 		}
 		p = fgets(status, 5, fp);
 		fclose(fp);
-		if(!p || strcmp(status, "up\n") != 0) {
+		if (!p || strcmp(status, "up\n") != 0) {
 			return NULL;
 		}
 
