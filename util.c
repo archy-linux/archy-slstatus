@@ -99,7 +99,8 @@ fmt_human(uintmax_t num, int base)
 	double scaled;
 	size_t i, prefixlen;
 	const char **prefix;
-	const char *prefix_1000[] = { "", "k", "M", "G", "T", "P", "E", "Z", "Y" };
+	const char *prefix_1000[] = { "", "k", "M", "G", "T", "P", "E", "Z",
+	                              "Y" };
 	const char *prefix_1024[] = { "", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei",
 	                              "Zi", "Yi" };
 

@@ -33,8 +33,7 @@
 		char path[PATH_MAX];
 
 		if (esnprintf(path, sizeof(path),
-		              "/sys/class/power_supply/%s/capacity",
-		              bat) < 0) {
+		              "/sys/class/power_supply/%s/capacity", bat) < 0) {
 			return NULL;
 		}
 		if (pscanf(path, "%d", &perc) != 1) {
@@ -58,8 +57,7 @@
 		char path[PATH_MAX], state[12];
 
 		if (esnprintf(path, sizeof(path),
-		              "/sys/class/power_supply/%s/status",
-		              bat) < 0) {
+		              "/sys/class/power_supply/%s/status", bat) < 0) {
 			return NULL;
 		}
 		if (pscanf(path, "%12s", state) != 1) {
@@ -82,8 +80,7 @@
 		char path[PATH_MAX], state[12];
 
 		if (esnprintf(path, sizeof(path),
-		              "/sys/class/power_supply/%s/status",
-		              bat) < 0) {
+		              "/sys/class/power_supply/%s/status", bat) < 0) {
 			return NULL;
 		}
 		if (pscanf(path, "%12s", state) != 1) {
@@ -91,8 +88,8 @@
 		}
 
 		if (!pick(bat, "/sys/class/power_supply/%s/charge_now",
-		          "/sys/class/power_supply/%s/energy_now",
-		          path, sizeof(path)) ||
+		          "/sys/class/power_supply/%s/energy_now", path,
+		          sizeof(path)) ||
 		    pscanf(path, "%ju", &charge_now) < 0) {
 			return NULL;
 		}

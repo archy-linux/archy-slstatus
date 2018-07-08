@@ -40,8 +40,8 @@
 			for (i = 0; i < LEN(ent); i++) {
 				if (ent[i].var &&
 				    !strncmp(line, ent[i].name, ent[i].len)) {
-					sscanf(line + ent[i].len + 1, "%ld kB\n",
-					       ent[i].var);
+					sscanf(line + ent[i].len + 1,
+					       "%ld kB\n", ent[i].var);
 					left--;
 					break;
 				}

@@ -10,8 +10,8 @@
 	{
 		uintmax_t num;
 
-		if (pscanf("/proc/sys/kernel/random/entropy_avail",
-		           "%ju", &num) != 1) {
+		if (pscanf("/proc/sys/kernel/random/entropy_avail", "%ju", &num)
+		    != 1) {
 			return NULL;
 		}
 

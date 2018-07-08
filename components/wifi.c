@@ -22,8 +22,7 @@
 		char status[5];
 		FILE *fp;
 
-		if (esnprintf(path, sizeof(path),
-		              "/sys/class/net/%s/operstate",
+		if (esnprintf(path, sizeof(path), "/sys/class/net/%s/operstate",
 		              interface) < 0) {
 			return NULL;
 		}
@@ -72,8 +71,8 @@
 
 		memset(&wreq, 0, sizeof(struct iwreq));
 		wreq.u.essid.length = IW_ESSID_MAX_SIZE+1;
-		if (esnprintf(wreq.ifr_name, sizeof(wreq.ifr_name),
-		              "%s", interface) < 0) {
+		if (esnprintf(wreq.ifr_name, sizeof(wreq.ifr_name), "%s",
+		              interface) < 0) {
 			return NULL;
 		}
 
@@ -151,8 +150,9 @@
 			if (nr.nr_max_rssi) {
 				q = IEEE80211_NODEREQ_RSSI(&nr);
 			} else {
-				q = nr.nr_rssi >= -50 ? 100 : (nr.nr_rssi <= -100 ? 0 :
-				(2 * (nr.nr_rssi + 100)));
+				q = nr.nr_rssi >= -50 ? 100 :
+				    (nr.nr_rssi <= -100 ? 0 :
+				    (2 * (nr.nr_rssi + 100)));
 			}
 			return bprintf("%d", q);
 		}

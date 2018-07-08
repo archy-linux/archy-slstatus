@@ -40,8 +40,8 @@
 			return NULL;
 		}
 
-		return bprintf("%d", 100 * ((total - free) -
-		                            (buffers + cached)) / total);
+		return bprintf("%d", 100 * ((total - free) - (buffers + cached))
+                               / total);
 	}
 
 	const char *
@@ -49,8 +49,8 @@
 	{
 		uintmax_t total;
 
-		if (pscanf("/proc/meminfo", "MemTotal: %ju kB\n",
-		           &total) != 1) {
+		if (pscanf("/proc/meminfo", "MemTotal: %ju kB\n", &total)
+		    != 1) {
 			return NULL;
 		}
 
