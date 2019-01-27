@@ -195,4 +195,57 @@
 
 		return NULL;
 	}
+#elif defined(__FreeBSD__)
+	#include <sys/sysctl.h>
+
+	const char *
+	battery_perc(const char *unused)
+	{
+		int cap;
+		size_t len;
+
+		len = sizeof(cap);
+		if (sysctlbyname("hw.acpi.battery.life", &cap, &len, NULL, 0) == -1
+				|| !len)
+			return NULL;
+
+		return bprintf("%d", cap);
+	}
+
+	const char *
+	battery_state(const char *unused)
+	{
+		int state;
+		size_t len;
+
+		len = sizeof(state);
+		if (sysctlbyname("hw.acpi.battery.state", &state, &len, NULL, 0) == -1
+				|| !len)
+			return NULL;
+
+		switch(state) {
+			case 0:
+			case 2:
+				return "+";
+			case 1:
+				return "-";
+			default:
+				return "?";
+		}
+	}
+
+	const char *
+	battery_remaining(const char *unused)
+	{
+		int rem;
+		size_t len;
+
+		len = sizeof(rem);
+		if (sysctlbyname("hw.acpi.battery.time", &rem, &len, NULL, 0) == -1
+				|| !len
+				|| rem == -1)
+			return NULL;
+
+		return bprintf("%uh %02um", rem / 60, rem % 60);
+	}
 #endif
