@@ -17,7 +17,7 @@
 
 		return bprintf("%ju", num);
 	}
-#elif defined(__OpenBSD__)
+#elif defined(__OpenBSD__) | defined(__FreeBSD__)
 	const char *
 	entropy(void)
 	{

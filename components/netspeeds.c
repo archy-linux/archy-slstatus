@@ -58,7 +58,7 @@
 		return fmt_human((txbytes - oldtxbytes) * 1000 / interval,
 		                 1024);
 	}
-#elif defined(__OpenBSD__)
+#elif defined(__OpenBSD__) | defined(__FreeBSD__)
 	#include <string.h>
 	#include <ifaddrs.h>
 	#include <sys/types.h>
