@@ -103,4 +103,54 @@
 		                (b[CP_USER] + b[CP_NICE] + b[CP_SYS] +
 		                 b[CP_INTR] + b[CP_IDLE])));
 	}
+#elif defined(__FreeBSD__)
+	#include <sys/param.h>
+	#include <sys/sysctl.h>
+	#include <devstat.h>
+
+	const char *
+	cpu_freq(void)
+	{
+		int freq;
+		size_t size;
+
+		size = sizeof(freq);
+		/* in MHz */
+		if (sysctlbyname("hw.clockrate", &freq, &size, NULL, 0) == -1
+				|| !size) {
+			warn("sysctlbyname 'hw.clockrate':");
+			return NULL;
+		}
+
+		return fmt_human(freq * 1E6, 1000);
+	}
+
+	const char *
+	cpu_perc(void)
+	{
+		size_t size;
+		static long a[CPUSTATES];
+		long b[CPUSTATES];
+
+		size = sizeof(a);
+		memcpy(b, a, sizeof(b));
+		if (sysctlbyname("kern.cp_time", &a, &size, NULL, 0) == -1
+				|| !size) {
+			warn("sysctlbyname 'kern.cp_time':");
+			return NULL;
+		}
+		if (b[0] == 0) {
+			return NULL;
+		}
+
+		return bprintf("%d", 100 *
+		               ((a[CP_USER] + a[CP_NICE] + a[CP_SYS] +
+		                 a[CP_INTR]) -
+		                (b[CP_USER] + b[CP_NICE] + b[CP_SYS] +
+		                 b[CP_INTR])) /
+		               ((a[CP_USER] + a[CP_NICE] + a[CP_SYS] +
+		                 a[CP_INTR] + a[CP_IDLE]) -
+		                (b[CP_USER] + b[CP_NICE] + b[CP_SYS] +
+		                 b[CP_INTR] + b[CP_IDLE])));
+	}
 #endif
