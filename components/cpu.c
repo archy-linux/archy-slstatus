@@ -53,8 +53,7 @@
 	const char *
 	cpu_freq(void)
 	{
-		int mib[2];
-		uintmax_t freq;
+		int freq, mib[2];
 		size_t size;
 
 		mib[0] = CTL_HW;
