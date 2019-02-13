@@ -8,6 +8,11 @@
 
 #include "../util.h"
 
+#define RSSI_TO_PERC(rssi) \
+			rssi >= -50 ? 100 : \
+			(rssi <= -100 ? 0 : \
+			(2 * (rssi + 100)))
+
 #if defined(__linux__)
 	#include <limits.h>
 	#include <linux/wireless.h>
@@ -150,9 +155,7 @@
 			if (nr.nr_max_rssi) {
 				q = IEEE80211_NODEREQ_RSSI(&nr);
 			} else {
-				q = nr.nr_rssi >= -50 ? 100 :
-				    (nr.nr_rssi <= -100 ? 0 :
-				    (2 * (nr.nr_rssi + 100)));
+				q = RSSI_TO_PERC(nr.nr_rssi);
 			}
 			return bprintf("%d", q);
 		}
@@ -167,6 +170,95 @@
 
 		if (load_ieee80211_nodereq(interface, &nr)) {
 			return bprintf("%s", nr.nr_nwid);
+		}
+
+		return NULL;
+	}
+#elif defined(__FreeBSD__)
+	#include <net/if.h>
+	#include <net80211/ieee80211_ioctl.h>
+
+	int
+	load_ieee80211req(int sock, const char *interface, void *data, int type, size_t *len)
+	{
+		char warn_buf[256];
+		struct ieee80211req ireq;
+		memset(&ireq, 0, sizeof(ireq));
+		ireq.i_type = type;
+		ireq.i_data = (caddr_t) data;
+		ireq.i_len = *len;
+
+		strlcpy(ireq.i_name, interface, sizeof(ireq.i_name));
+		if (ioctl(sock, SIOCG80211, &ireq) < 0) {
+			snprintf(warn_buf,  sizeof(warn_buf),
+					"ioctl: 'SIOCG80211': %d", type);
+			warn(warn_buf);
+			return 0;
+		}
+
+		*len = ireq.i_len;
+		return 1;
+	}
+
+	const char *
+	wifi_perc(const char *interface)
+	{
+		union {
+			struct ieee80211req_sta_req sta;
+			uint8_t buf[24 * 1024];
+		} info;
+		uint8_t bssid[IEEE80211_ADDR_LEN];
+		int rssi_dbm;
+		int sockfd;
+		size_t len;
+
+		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+			warn("socket 'AF_INET':");
+			return 0;
+		}
+
+		/* Retreive MAC address of interface */
+		len = IEEE80211_ADDR_LEN;
+		if (load_ieee80211req(sockfd, interface, &bssid, IEEE80211_IOC_BSSID, &len))
+		{
+			/* Retrieve info on station with above BSSID */
+			memset(&info, 0, sizeof(info));
+			memcpy(info.sta.is_u.macaddr, bssid, sizeof(bssid));
+
+			len = sizeof(info);
+			if (load_ieee80211req(sockfd, interface, &info, IEEE80211_IOC_STA_INFO, &len)) {
+				rssi_dbm = info.sta.info[0].isi_noise +
+ 					         info.sta.info[0].isi_rssi / 2;
+				return bprintf("%d", RSSI_TO_PERC(rssi_dbm));
+			}
+		}
+
+		close(sockfd);
+		return NULL;
+	}
+
+	const char *
+	wifi_essid(const char *interface)
+	{
+		char ssid[IEEE80211_NWID_LEN + 1];
+		size_t len;
+		int sockfd;
+
+		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+			warn("socket 'AF_INET':");
+			return 0;
+		}
+
+		len = sizeof(ssid);
+		memset(&ssid, 0, len);
+		if (load_ieee80211req(sockfd, interface, &ssid, IEEE80211_IOC_SSID, &len )) {
+			if (len < sizeof(ssid))
+				len += 1;
+			else
+				len = sizeof(ssid);
+
+			ssid[len - 1] = '\0';
+			return bprintf("%s", ssid);
 		}
 
 		return NULL;
