@@ -211,14 +211,16 @@
 		int rssi_dbm;
 		int sockfd;
 		size_t len;
+		const char *fmt;
 
 		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 			warn("socket 'AF_INET':");
-			return 0;
+			return NULL;
 		}
 
 		/* Retreive MAC address of interface */
 		len = IEEE80211_ADDR_LEN;
+		fmt = NULL;
 		if (load_ieee80211req(sockfd, interface, &bssid, IEEE80211_IOC_BSSID, &len))
 		{
 			/* Retrieve info on station with above BSSID */
@@ -229,12 +231,13 @@
 			if (load_ieee80211req(sockfd, interface, &info, IEEE80211_IOC_STA_INFO, &len)) {
 				rssi_dbm = info.sta.info[0].isi_noise +
  					         info.sta.info[0].isi_rssi / 2;
-				return bprintf("%d", RSSI_TO_PERC(rssi_dbm));
+
+				fmt = bprintf("%d", RSSI_TO_PERC(rssi_dbm));
 			}
 		}
 
 		close(sockfd);
-		return NULL;
+		return fmt;
 	}
 
 	const char *
@@ -243,12 +246,14 @@
 		char ssid[IEEE80211_NWID_LEN + 1];
 		size_t len;
 		int sockfd;
+		const char *fmt;
 
 		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 			warn("socket 'AF_INET':");
-			return 0;
+			return NULL;
 		}
 
+		fmt = NULL;
 		len = sizeof(ssid);
 		memset(&ssid, 0, len);
 		if (load_ieee80211req(sockfd, interface, &ssid, IEEE80211_IOC_SSID, &len )) {
@@ -258,9 +263,10 @@
 				len = sizeof(ssid);
 
 			ssid[len - 1] = '\0';
-			return bprintf("%s", ssid);
+			fmt = bprintf("%s", ssid);
 		}
 
-		return NULL;
+		close(sockfd);
+		return fmt;
 	}
 #endif
