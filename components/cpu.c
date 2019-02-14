@@ -24,7 +24,7 @@
 	cpu_perc(void)
 	{
 		static long double a[7];
-		long double b[7];
+		long double b[7], sum;
 
 		memcpy(b, a, sizeof(b));
 		/* cpu user nice system idle iowait irq softirq */
@@ -37,13 +37,16 @@
 			return NULL;
 		}
 
+		sum = (b[0] + b[1] + b[2] + b[3] + b[4] + b[5] + b[6]) -
+		      (a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6]);
+
+		if (sum == 0) {
+			return NULL;
+		}
+
 		return bprintf("%d", (int)(100 *
 		               ((b[0] + b[1] + b[2] + b[5] + b[6]) -
-		                (a[0] + a[1] + a[2] + a[5] + a[6])) /
-		               ((b[0] + b[1] + b[2] + b[3] + b[4] + b[5] +
-		                 b[6]) -
-		                (a[0] + a[1] + a[2] + a[3] + a[4] + a[5] +
-		                 a[6]))));
+		                (a[0] + a[1] + a[2] + a[5] + a[6])) / sum));
 	}
 #elif defined(__OpenBSD__)
 	#include <sys/param.h>
@@ -75,7 +78,7 @@
 	{
 		int mib[2];
 		static uintmax_t a[CPUSTATES];
-		uintmax_t b[CPUSTATES];
+		uintmax_t b[CPUSTATES], sum;
 		size_t size;
 
 		mib[0] = CTL_KERN;
@@ -92,15 +95,18 @@
 			return NULL;
 		}
 
+		sum = (a[CP_USER] + a[CP_NICE] + a[CP_SYS] + a[CP_INTR] + a[CP_IDLE]) -
+		      (b[CP_USER] + b[CP_NICE] + b[CP_SYS] + b[CP_INTR] + b[CP_IDLE]);
+
+		if (sum == 0) {
+			return NULL;
+		}
+
 		return bprintf("%d", 100 *
 		               ((a[CP_USER] + a[CP_NICE] + a[CP_SYS] +
 		                 a[CP_INTR]) -
 		                (b[CP_USER] + b[CP_NICE] + b[CP_SYS] +
-		                 b[CP_INTR])) /
-		               ((a[CP_USER] + a[CP_NICE] + a[CP_SYS] +
-		                 a[CP_INTR] + a[CP_IDLE]) -
-		                (b[CP_USER] + b[CP_NICE] + b[CP_SYS] +
-		                 b[CP_INTR] + b[CP_IDLE])));
+		                 b[CP_INTR])) / sum);
 	}
 #elif defined(__FreeBSD__)
 	#include <sys/param.h>
@@ -129,7 +135,7 @@
 	{
 		size_t size;
 		static long a[CPUSTATES];
-		long b[CPUSTATES];
+		long b[CPUSTATES], sum;
 
 		size = sizeof(a);
 		memcpy(b, a, sizeof(b));
@@ -142,14 +148,17 @@
 			return NULL;
 		}
 
+		sum = (a[CP_USER] + a[CP_NICE] + a[CP_SYS] + a[CP_INTR] + a[CP_IDLE]) -
+		      (b[CP_USER] + b[CP_NICE] + b[CP_SYS] + b[CP_INTR] + b[CP_IDLE]);
+
+		if (sum == 0) {
+			return NULL;
+		}
+
 		return bprintf("%d", 100 *
 		               ((a[CP_USER] + a[CP_NICE] + a[CP_SYS] +
 		                 a[CP_INTR]) -
 		                (b[CP_USER] + b[CP_NICE] + b[CP_SYS] +
-		                 b[CP_INTR])) /
-		               ((a[CP_USER] + a[CP_NICE] + a[CP_SYS] +
-		                 a[CP_INTR] + a[CP_IDLE]) -
-		                (b[CP_USER] + b[CP_NICE] + b[CP_SYS] +
-		                 b[CP_INTR] + b[CP_IDLE])));
+		                 b[CP_INTR])) / sum);
 	}
 #endif
