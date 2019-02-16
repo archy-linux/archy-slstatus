@@ -32,6 +32,7 @@ Features
 
 Requirements
 ------------
+Currently slstatus works on FreeBSD, Linux and OpenBSD.
 In order to build slstatus you need the Xlib header files.
 
 
