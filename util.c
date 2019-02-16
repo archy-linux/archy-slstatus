@@ -123,7 +123,7 @@ fmt_human(uintmax_t num, int base)
 		scaled /= base;
 	}
 
-	return bprintf("%.1f%s", scaled, prefix[i]);
+	return bprintf("%.1f %s", scaled, prefix[i]);
 }
 
 int
