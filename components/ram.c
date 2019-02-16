@@ -156,4 +156,67 @@
 
 		return NULL;
 	}
+#elif defined(__FreeBSD__)
+	#include <sys/sysctl.h>
+	#include <sys/vmmeter.h>
+	#include <unistd.h>
+	#include <vm/vm_param.h>
+
+	const char *
+	ram_free(void) {
+		struct vmtotal vm_stats;
+		int mib[] = {CTL_VM, VM_TOTAL};
+		size_t len;
+
+		len = sizeof(struct vmtotal);
+		if (sysctl(mib, 2, &vm_stats, &len, NULL, 0) == -1
+				|| !len)
+			return NULL;
+
+		return fmt_human(vm_stats.t_free * getpagesize(), 1024);
+	}
+
+	const char *
+	ram_total(void) {
+		long npages;
+		size_t len;
+
+		len = sizeof(npages);
+		if (sysctlbyname("vm.stats.vm.v_page_count", &npages, &len, NULL, 0) == -1
+				|| !len)
+			return NULL;
+
+		return fmt_human(npages * getpagesize(), 1024);
+	}
+
+	const char *
+	ram_perc(void) {
+		long npages;
+		long active;
+		size_t len;
+
+		len = sizeof(npages);
+		if (sysctlbyname("vm.stats.vm.v_page_count", &npages, &len, NULL, 0) == -1
+				|| !len)
+			return NULL;
+
+		if (sysctlbyname("vm.stats.vm.v_active_count", &active, &len, NULL, 0) == -1
+				|| !len)
+			return NULL;
+
+		return bprintf("%d", active * 100 / npages);
+	}
+
+	const char *
+	ram_used(void) {
+		long active;
+		size_t len;
+
+		len = sizeof(active);
+		if (sysctlbyname("vm.stats.vm.v_active_count", &active, &len, NULL, 0) == -1
+				|| !len)
+			return NULL;
+
+		return fmt_human(active * getpagesize(), 1024);
+	}
 #endif
