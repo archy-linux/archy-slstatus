@@ -56,6 +56,9 @@ const char *ram_used(void);
 /* run_command */
 const char *run_command(const char *cmd);
 
+/* separator */
+const char *separator(const char *separator);
+
 /* swap */
 const char *swap_free(void);
 const char *swap_perc(void);
