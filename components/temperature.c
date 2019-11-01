@@ -45,7 +45,7 @@
 		}
 
 		/* kelvin to celsius */
-		return bprintf("%d", (temp.value - 273150000) / 1E6);
+		return bprintf("%d", (int)((float)(temp.value-273150000) / 1E6));
 	}
 #elif defined(__FreeBSD__)
 	#include <stdio.h>
