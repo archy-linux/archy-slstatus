@@ -8,69 +8,177 @@
 #include "../util.h"
 
 #if defined(__OpenBSD__)
-	#include <sys/audioio.h>
+	#include <sys/queue.h>
+	#include <poll.h>
+	#include <sndio.h>
+	#include <stdlib.h>
+
+	struct control {
+		LIST_ENTRY(control)	next;
+		unsigned int		addr;
+	#define CTRL_NONE	0
+	#define CTRL_LEVEL	1
+	#define CTRL_MUTE	2
+		unsigned int		type;
+		unsigned int		maxval;
+		unsigned int		val;
+	};
+
+	static LIST_HEAD(, control) controls = LIST_HEAD_INITIALIZER(controls);
+	static struct pollfd *pfds;
+	static struct sioctl_hdl *hdl;
+	static int initialized;
+
+	/*
+	 * Call-back to obtain the description of all audio controls.
+	 */
+	static void
+	ondesc(void *unused, struct sioctl_desc *desc, int val)
+	{
+		struct control *c, *ctmp;
+		unsigned int type = CTRL_NONE;
+
+		if (desc == NULL)
+			return;
+
+		/* Delete existing audio control with the same address. */
+		LIST_FOREACH_SAFE(c, &controls, next, ctmp) {
+			if (desc->addr == c->addr) {
+				LIST_REMOVE(c, next);
+				free(c);
+				break;
+			}
+		}
+
+		/* Only match output.level and output.mute audio controls. */
+		if (desc->group[0] != 0 ||
+		    strcmp(desc->node0.name, "output") != 0)
+			return;
+		if (desc->type == SIOCTL_NUM &&
+		    strcmp(desc->func, "level") == 0)
+			type = CTRL_LEVEL;
+		else if (desc->type == SIOCTL_SW &&
+			 strcmp(desc->func, "mute") == 0)
+			type = CTRL_MUTE;
+		else
+			return;
+
+		c = malloc(sizeof(struct control));
+		if (c == NULL) {
+			warn("sndio: failed to allocate audio control\n");
+			return;
+		}
+
+		c->addr = desc->addr;
+		c->type = type;
+		c->maxval = desc->maxval;
+		c->val = val;
+		LIST_INSERT_HEAD(&controls, c, next);
+	}
+
+	/*
+	 * Call-back invoked whenever an audio control changes.
+	 */
+	static void
+	onval(void *unused, unsigned int addr, unsigned int val)
+	{
+		struct control *c;
+
+		LIST_FOREACH(c, &controls, next) {
+			if (c->addr == addr)
+				break;
+		}
+		c->val = val;
+	}
+
+	static void
+	cleanup(void)
+	{
+		struct control *c;
+
+		if (hdl) {
+			sioctl_close(hdl);
+			hdl = NULL;
+		}
+
+		free(pfds);
+		pfds = NULL;
+
+		while (!LIST_EMPTY(&controls)) {
+			c = LIST_FIRST(&controls);
+			LIST_REMOVE(c, next);
+			free(c);
+		}
+	}
+
+	static int
+	init(void)
+	{
+		hdl = sioctl_open(SIO_DEVANY, SIOCTL_READ, 0);
+		if (hdl == NULL) {
+			warn("sndio: cannot open device");
+			goto failed;
+		}
+
+		if (!sioctl_ondesc(hdl, ondesc, NULL)) {
+			warn("sndio: cannot set control description call-back");
+			goto failed;
+		}
+
+		if (!sioctl_onval(hdl, onval, NULL)) {
+			warn("sndio: cannot set control values call-back");
+			goto failed;
+		}
+
+		pfds = calloc(sioctl_nfds(hdl), sizeof(struct pollfd));
+		if (pfds == NULL) {
+			warn("sndio: cannot allocate pollfd structures");
+			goto failed;
+		}
+
+		return 1;
+	failed:
+		cleanup();
+		return 0;
+	}
 
 	const char *
-	vol_perc(const char *card)
+	vol_perc(const char *unused)
 	{
-		static int cls = -1;
-		mixer_devinfo_t mdi;
-		mixer_ctrl_t mc;
-		int afd = -1, m = -1, v = -1;
+		struct control *c;
+		int n, v, value;
 
-		if ((afd = open(card, O_RDONLY)) < 0) {
-			warn("open '%s':", card);
+		if (!initialized)
+			initialized = init();
+
+		if (hdl == NULL)
 			return NULL;
-		}
 
-		for (mdi.index = 0; cls == -1; mdi.index++) {
-			if (ioctl(afd, AUDIO_MIXER_DEVINFO, &mdi) < 0) {
-				warn("ioctl 'AUDIO_MIXER_DEVINFO':");
-				close(afd);
-				return NULL;
-			}
-			if (mdi.type == AUDIO_MIXER_CLASS &&
-			    !strncmp(mdi.label.name,
-				     AudioCoutputs,
-				     MAX_AUDIO_DEV_LEN))
-				cls = mdi.index;
-			}
-		for (mdi.index = 0; v == -1 || m == -1; mdi.index++) {
-			if (ioctl(afd, AUDIO_MIXER_DEVINFO, &mdi) < 0) {
-				warn("ioctl 'AUDIO_MIXER_DEVINFO':");
-				close(afd);
-				return NULL;
-			}
-			if (mdi.mixer_class == cls &&
-			    ((mdi.type == AUDIO_MIXER_VALUE &&
-			      !strncmp(mdi.label.name,
-				       AudioNmaster,
-				       MAX_AUDIO_DEV_LEN)) ||
-			     (mdi.type == AUDIO_MIXER_ENUM &&
-			      !strncmp(mdi.label.name,
-				      AudioNmute,
-				      MAX_AUDIO_DEV_LEN)))) {
-				mc.dev = mdi.index, mc.type = mdi.type;
-				if (ioctl(afd, AUDIO_MIXER_READ, &mc) < 0) {
-					warn("ioctl 'AUDIO_MIXER_READ':");
-					close(afd);
+		n = sioctl_pollfd(hdl, pfds, POLLIN);
+		if (n > 0) {
+			n = poll(pfds, n, 0);
+			if (n > 0) {
+				if (sioctl_revents(hdl, pfds) & POLLHUP) {
+					warn("sndio: disconnected");
+					cleanup();
 					return NULL;
 				}
-				if (mc.type == AUDIO_MIXER_VALUE)
-					v = mc.un.value.num_channels == 1 ?
-					    mc.un.value.level[AUDIO_MIXER_LEVEL_MONO] :
-					    (mc.un.value.level[AUDIO_MIXER_LEVEL_LEFT] >
-					     mc.un.value.level[AUDIO_MIXER_LEVEL_RIGHT] ?
-					     mc.un.value.level[AUDIO_MIXER_LEVEL_LEFT] :
-					     mc.un.value.level[AUDIO_MIXER_LEVEL_RIGHT]);
-				else if (mc.type == AUDIO_MIXER_ENUM)
-					m = mc.un.ord;
 			}
 		}
 
-		close(afd);
+		value = 100;
+		LIST_FOREACH(c, &controls, next) {
+			if (c->type == CTRL_MUTE && c->val == 1)
+				value = 0;
+			else if (c->type == CTRL_LEVEL) {
+				v = (c->val * 100 + c->maxval / 2) / c->maxval;
+				/* For multiple channels return the minimum. */
+				if (v < value)
+					value = v;
+			}
+		}
 
-		return bprintf("%d", m ? 0 : v * 100 / 255);
+		return bprintf("%d", value);
 	}
 #else
 	#include <sys/soundcard.h>
