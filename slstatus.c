@@ -18,7 +18,7 @@ struct arg {
 };
 
 char buf[1024];
-static int done;
+static volatile sig_atomic_t done;
 static Display *dpy;
 
 #include "config.h"
@@ -26,9 +26,8 @@ static Display *dpy;
 static void
 terminate(const int signo)
 {
-	(void)signo;
-
-	done = 1;
+	if (signo != SIGUSR1)
+		done = 1;
 }
 
 static void
@@ -72,6 +71,8 @@ main(int argc, char *argv[])
 	act.sa_handler = terminate;
 	sigaction(SIGINT,  &act, NULL);
 	sigaction(SIGTERM, &act, NULL);
+	act.sa_flags |= SA_RESTART;
+	sigaction(SIGUSR1, &act, NULL);
 
 	if (!sflag && !(dpy = XOpenDisplay(NULL))) {
 		die("XOpenDisplay: Failed to open display");
