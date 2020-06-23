@@ -1,4 +1,4 @@
-.Dd 2017-08-10
+.Dd 2020-06-23
 .Dt SLSTATUS 1
 .Os
 .Sh NAME
@@ -7,6 +7,7 @@
 .Sh SYNOPSIS
 .Nm
 .Op Fl s
+.Op Fl 1
 .Sh DESCRIPTION
 .Nm
 is a suckless status monitor for window managers that use WM_NAME (e.g. dwm) or
@@ -18,6 +19,8 @@ outputs to WM_NAME.
 .Bl -tag -width Ds
 .It Fl s
 Write to stdout instead of WM_NAME.
+.It Fl 1
+Write once to stdout and quit.
 .El
 .Sh CUSTOMIZATION
 .Nm

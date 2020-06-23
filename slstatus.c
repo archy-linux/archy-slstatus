@@ -41,7 +41,7 @@ difftimespec(struct timespec *res, struct timespec *a, struct timespec *b)
 static void
 usage(void)
 {
-	die("usage: %s [-s]", argv0);
+	die("usage: %s [-s] [-1]", argv0);
 }
 
 int
@@ -56,6 +56,9 @@ main(int argc, char *argv[])
 
 	sflag = 0;
 	ARGBEGIN {
+		case '1':
+			done = 1;
+			/* fallthrough */
 		case 's':
 			sflag = 1;
 			break;
@@ -78,7 +81,7 @@ main(int argc, char *argv[])
 		die("XOpenDisplay: Failed to open display");
 	}
 
-	while (!done) {
+	do {
 		if (clock_gettime(CLOCK_MONOTONIC, &start) < 0) {
 			die("clock_gettime:");
 		}
@@ -125,7 +128,7 @@ main(int argc, char *argv[])
 				}
 			}
 		}
-	}
+	} while (!done);
 
 	if (!sflag) {
 		XStoreName(dpy, DefaultRootWindow(dpy), NULL);
