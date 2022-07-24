@@ -76,6 +76,6 @@ static const struct arg args[] = {
 	{ battery_perc, "🔋%s%% ", "BAT0"     },
 	{ battery_state, "%s ", "BAT0"    },
 	{ keymap, "⌨%s ", NULL	      },
-	{ datetime, "🗓️ %s ", "%D %a" },
+	{ datetime, "🗓%s ", "%D %a" },
 	{ datetime, "🕘%s ", "%r" },
 };
