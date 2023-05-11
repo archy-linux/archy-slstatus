@@ -55,14 +55,15 @@ $(BUILD_DIR)/archy-slstatus: $(SLSTATUS_OBJ) $(COM_OBJ) $(REQ_OBJ)
 clean:
 	rm -rf $(BUILD_DIR)
 
-dist:
-	rm -rf "archy-slstatus_$(VERSION)"
-	mkdir -p "archy-slstatus_$(VERSION)/components"
-	cp -R LICENSE Makefile README config.mk config.def.h \
-		arg.h $(SRC_DIR)/archy-slstatus.c $(COM:%=$(SRC_DIR)/%.c) $(REQ:%=$(SRC_DIR)/%.c) $(REQ:%=$(SRC_DIR)/%.h) \
-		archy-slstatus.1 "archy-slstatus_$(VERSION)"
-	tar -cf - "archy-slstatus_$(VERSION)" | gzip -c > "archy-slstatus_$(VERSION).tar.gz"
-	rm -rf "archy-slstatus_$(VERSION)"
+dist: build/archy-slstatus
+	mkdir -p "dist/archy-slstatus_$(VERSION)"
+	cp -R LICENSE README.md $(BUILD_DIR)/archy-slstatus archy-slstatus.1 "dist/archy-slstatus_$(VERSION)"
+	tar -cf - "dist/archy-slstatus_$(VERSION)" | gzip -c > "archy-slstatus_$(VERSION).tar.gz"
+	rm -rf "dist/archy-slstatus_$(VERSION)"
+	mv "archy-slstatus_$(VERSION).tar.gz" "dist/archy-slstatus_$(VERSION).tar.gz"
+	echo "The tarball is ready."
+	printf "Tarball size: %s\n" $$(du -h dist/archy-slstatus_${VERSION}.tar.gz | cut -f1)
+	printf "Tarball hash: %s\n" $$(sha256sum dist/archy-slstatus_${VERSION}.tar.gz)
 
 install: all
 	mkdir -p "$(DESTDIR)$(PREFIX)/bin"
