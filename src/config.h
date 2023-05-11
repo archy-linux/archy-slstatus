@@ -76,8 +76,8 @@ static const struct arg args[] = {
 	{ battery_perc, "BAT:%s%%", "BAT0"     },
 	{ battery_state, "%s ", "BAT0"    },
 	{ keymap, "KB:%s ", NULL	      },
-	{ datetime, "%s ", "%r" },
-	{ datetime, "DATE:%s|", "%a %d/%m/%Y" },
+	{ datetime, "TIME:%s|", "%r" },
+	{ datetime, "%s ", "%a %d/%m/%Y" },
   { disk_used, "(/:%s|", "/" },
   { disk_used, "~:%s)", "/home" },
 };
