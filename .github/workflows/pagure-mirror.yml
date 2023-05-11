@@ -1,0 +1,18 @@
+name: Mirror the repo to pagure
+on: [ push ]
+
+jobs:
+  pagure-mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: mirror in pagure
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: yesolutions/mirror-action@v0.6.0
+        with:
+          REMOTE: 'https://pagure.io/archy-linux/archy-slstatus.git'
+          REMOTE_NAME: pagure
+          GIT_USERNAME: anas-elgarhy
+          GIT_PASSWORD: ${{ secrets.PAGURE_TOKEN }}
+
