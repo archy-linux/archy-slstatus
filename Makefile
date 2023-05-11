@@ -49,9 +49,6 @@ $(SLSTATUS_OBJ): $(SRC_DIR)/archy_slstatus.c $(SRC_DIR)/archy_slstatus.h $(SRC_D
 	@mkdir -p $(@D)
 	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) $<
 
-config.h:
-	cp config.def.h $@
-
 $(BUILD_DIR)/archy-slstatus: $(SLSTATUS_OBJ) $(COM_OBJ) $(REQ_OBJ)
 	$(CC) -o $@ $(LDFLAGS) $(SLSTATUS_OBJ) $(COM_OBJ) $(REQ_OBJ) $(LDLIBS)
 
