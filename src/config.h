@@ -66,7 +66,7 @@ static const char unknown_str[] = "n/a";
 static const struct arg args[] = {
 	/* function format          argument */
     { run_command, "SP:%s ", "amixer sget Master | awk -F\"[][]\" '/%/ { print $2 }' | head -n1" },
-	{ run_command, "BR:%s%% ", "xbacklight -get | awk '{print $1}'" },
+	{ run_command, "BR:%s%% ", "xbacklight -get | awk '{printf \"%.0f\", $1}'" },
 	{ cpu_perc, "CPU:%s%%|", NULL	      },
         { cpu_freq, "%s ", NULL           },
         { temp, "%s\u00b0C ", "/sys/class/thermal/thermal_zone8/temp" },
@@ -76,8 +76,8 @@ static const struct arg args[] = {
 	{ battery_perc, "BAT:%s%%", "BAT0"     },
 	{ battery_state, "%s ", "BAT0"    },
 	{ keymap, "KB:%s ", NULL	      },
-	{ datetime, "DATE:%s|", "%D %a" },
 	{ datetime, "%s ", "%r" },
+	{ datetime, "DATE:%s|", "%a %d/%m/%Y" },
   { disk_used, "(/:%s|", "/" },
   { disk_used, "~:%s)", "/home" },
 };
