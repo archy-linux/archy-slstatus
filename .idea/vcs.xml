@@ -2,5 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/archpackage/archy-slstatus-git/archpackage/archy-slstatus-git/archy-slstatus-git" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/archpackage/archy-slstatus-git/archy-slstatus-git" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/archpackage/archy-slstatus/archpackage/archy-slstatus/archy-slstatus" vcs="Git" />
   </component>
 </project>
