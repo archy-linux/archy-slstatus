@@ -1,0 +1,24 @@
+name: aur-release
+
+on:
+  push:
+    tags:
+      - "*" # Run on any tag
+
+jobs:
+    aur-publish:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v3
+    
+        - name: Publish AUR package
+          uses: anas-elgarhy/aur-release-action@v4.1
+          with:
+            ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            pkgbuild_path: archpackage/archy-slstatus/PKGBUILD
+            # aur_submodule_path: archpackage/aarty
+            git_username: Anas Elgarhy
+            git_email: anas.elgarhy.dev@gmail.com 
+            commit_message: UpUp Update %FILENAME% to %VERSION% yoo 
+            try_build_and_install: false
