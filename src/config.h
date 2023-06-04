@@ -69,7 +69,7 @@ static const struct arg args[] = {
 	{ run_command, "BR:%s%% ", "xbacklight -get | awk '{printf \"%.0f\", $1}'" },
 	{ cpu_perc, "CPU:%s%%|", NULL	      },
         { cpu_freq, "%s ", NULL           },
-        { temp, "%s\u00b0C ", "/sys/class/thermal/thermal_zone8/temp" },
+        { temp, "%s\u00b0C ", "/sys/class/hwmon/hwmon5/temp1_input" },
 	{ ram_perc, "RAM:%s%% ", NULL	      },
 //	{ netspeed_tx, " %s ^ ", "wlan0"    },
 //  { netspeed_rx, " %s  ", "wlan0"    },
