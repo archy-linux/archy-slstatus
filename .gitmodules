@@ -4,3 +4,6 @@
 [submodule "archpackage/archy-slstatus-git/archy-slstatus-git"]
 	path = archpackage/archy-slstatus-git/archy-slstatus-git
 	url = ssh://aur@aur.archlinux.org/archy-slstatus-git.git
+[submodule "archpackage/archy-slstatus/archy-slstatus"]
+	path = archpackage/archy-slstatus/archy-slstatus
+	url = ssh://aur@aur.archlinux.org/archy-slstatus.git
