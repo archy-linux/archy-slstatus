@@ -63,21 +63,35 @@ static const char unknown_str[] = "n/a";
  * wifi_perc           WiFi signal in percent          interface name (wlan0)
  * wifi_essid          WiFi ESSID                      interface name (wlan0)
  */
+static const struct arg _separator = {separator, " \\|/ ", NULL};
+#define BAT_NAME "BAT0"
 static const struct arg args[] = {
-	/* function format          argument */
-    { run_command, "SP:%s ", "amixer sget Master | awk -F\"[][]\" '/%/ { print $2 }' | head -n1" },
-	{ run_command, "BR:%s%% ", "xbacklight -get | awk '{printf \"%.0f\", $1}'" },
-	{ cpu_perc, "CPU:%s%%|", NULL	      },
-        { cpu_freq, "%s ", NULL           },
-        { temp, "%s\u00b0C ", "/sys/class/hwmon/hwmon5/temp1_input" },
-	{ ram_perc, "RAM:%s%% ", NULL	      },
-//	{ netspeed_tx, " %s ^ ", "wlan0"    },
-//  { netspeed_rx, " %s  ", "wlan0"    },
-	{ battery_perc, "BAT:%s%%", "BAT0"     },
-	{ battery_state, "%s ", "BAT0"    },
-	{ keymap, "KB:%s ", NULL	      },
-	{ datetime, "TIME:%s|", "%r" },
-	{ datetime, "%s ", "%a %d/%m/%Y" },
-  { disk_used, "(/:%s|", "/" },
-  { disk_used, "~:%s)", "/home" },
+    /* function format          argument */
+    {run_command, "SP:%s ",
+     "amixer sget Master | awk -F\"[][]\" '/%/ { print $2 }' | head -n1"},
+    {run_command, "BR:%s%% ", "xbacklight -get | awk '{printf \"%.0f\", $1}'"},
+    _separator,
+    {cpu_perc, "CPU:%s%%|", NULL},
+    {cpu_freq, "%s ", NULL},
+    {temp, "%s\u00b0C ", "/sys/class/thermal/thermal_zone8/temp"},
+    _separator,
+    {ram_perc, "RAM:%s%% ", NULL},
+    {swap_perc, "SWAP: %s%% ", NULL },
+    //	{ netspeed_tx, " %s ^ ", "wlan0"    },
+    //  { netspeed_rx, " %s  ", "wlan0"    },
+    _separator,
+    {battery_perc, "BAT:%s%%", BAT_NAME},
+    {battery_state, "%s ", BAT_NAME},
+    // {battery_remaining, " REM: %s", BAT_NAME},
+    _separator,
+    {keymap, "KB:%s", NULL},
+    _separator,
+    {datetime, "TIME:%s", "%r"},
+    _separator,
+    {datetime, "%s ", "%a %d/%m/%Y"},
+    _separator,
+    {disk_used, "(ROOT:%s|", "/"},
+    {disk_used, "HOME:%s)", "/home"},
+    _separator,
+    {uptime, "UP: %s", NULL},
 };
